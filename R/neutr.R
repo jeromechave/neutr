@@ -1,11 +1,9 @@
-###library(dqrng)
-###library(pracma)
-###library(nloptr)
 usethis::use_package("dqrng")
 usethis::use_package("pracma")
 usethis::use_package("nloptr")
-## General use function
-#' zeroremove
+
+#' General use function
+#' @description zeroremove is used to remove zeros and NAs in a vector of reals or of integers. This is a simple utility function.
 #'
 #' @param x vector of real
 #'
@@ -16,20 +14,19 @@ usethis::use_package("nloptr")
 #' zeroremove(c(2.1,0.0,3.0))
 zeroremove=function(x){ y=x[x!=0]; z=y[!is.na(y)]; z}
 
-###### EWENS SAMPLING FORMULA        ######################
-###### MAXIMUM LIKELIHOOD ESTIMATION ######################
 
-### Compute the maximum likelihood estimate of Ewens theta parameter
-### for a given species abundance distribution {n_1, ..., n_k}
-### where n_i is the number of organisms of species i in the sample
-### and k is the total number of species (for all i, n_i > 0)
-### The input should be a vector
-#' optim.ewens
+#' Maximum likelihood estimation of theta based on Ewens sampling formula
+#'
+#' @description optim.ewens computes the maximum likelihood estimate of Ewens theta parameter
+#' for a given species abundance distribution {n_1, ..., n_k}
+#' where n_i is the number of organisms of species i in the sample
+#' and k is the total number of species (for all i, n_i > 0)
+#' The input should be a vector
 #'
 #' @param input_abundances a vector of integers
 #'
-#' @return theta a real value
-#' @return log-likelihood a real value
+#' @return theta parameter of Ewens sampling formula, a real value
+#' @return logl maximal value of the log-likelihood, a real value
 #' @export
 #'
 #' @examples
@@ -65,18 +62,21 @@ optim.ewens = function(input_abundances){
 
 }
 
-### Compute the maximum likelihood estimate for the multi-deme parameters
-### for a given species abundance matrix {n_j1, ..., n_jk} for deme j
-### where n_ji is the number of organisms of species i in deme j
-### and k is the total number of species (for all i, n_i >= 0)
-#' optim.multideme
+#' Maximum likelihood estimation of local immigration rates m_j based on multi-deme sampling formula
 #'
-#' @param input_abundance_matrix a matrix of abundances
+#' @description optim.multideme computes the maximum likelihood estimate for the multi-deme parameters
+#' for a given species abundance matrix {n_j1, ..., n_jk} for deme j
+#' where n_ji is the number of organisms of species i in deme j
+#' and k is the total number of species (for all i, n_i >= 0).
+#' The formulation in this description is that of species abundance distributions
+#' but is valid for any partitions in a subdivided setting (word frequencies in multiple books ..)
 #'
-#' @return I a vector of real numbers
-#' @return m a vector of real numbers
-#' @return J a vector of integers
-#' @return k a vector of real numbers
+#' @param input_abundance_matrix a matrix (n_ij) of abundances for species i in deme (local site) j
+#'
+#' @return I rescaled immigration rate, I=m/(1-m)*(J-1), a vector of real numbers
+#' @return m immigration rate, a vector of real numbers
+#' @return J local community size, a vector of integers
+#' @return k number of classes/species, a vector of integers
 #' @export
 #'
 #' @examples
@@ -125,16 +125,18 @@ optim.multideme = function(input_abundance_matrix){
 
 }
 
-### Compute the maximum likelihood estimate of Pitman (theta,sigma) parameters
-### for a given species abundance distribution {n_1, ..., n_k}
-### where n_i is the number of organisms of species i in the sample
-### and k is the total number of species (for all i, n_i > 0)
-### The input should be a vector and initial values of (theta,sigma)
-### The argument should be init_vals=c(theta_init,sigma_init)
-#' optim.pitman
+#' Maximum likelihood estimation of theta and sigma based on Pitman sampling formula
+#'
+#' @description optim.pitman computes the maximum likelihood estimate of Pitman (theta,sigma) parameters
+#' for a given species abundance distribution {n_1, ..., n_k}
+#' where n_i is the number of organisms of species i in the sample
+#' and k is the total number of species (for all i, n_i > 0)
+#' The input should be a vector and initial values of (theta,sigma)
+#' The argument should be init_vals=c(theta_init,sigma_init)
+#' with the condition theta_init>0.0 and 1.0 > sigma_init > 0.0
 #'
 #' @param input_abundances a vector of integers
-#' @param init_vals a vector of two real numbers
+#' @param init_vals initial values of (theta,sigma), a vector of two real numbers
 #'
 #' @return theta a real value
 #' @return sigma a real value
@@ -174,22 +176,21 @@ optim.pitman = function(input_abundances,init_vals=c(10.0,0.1)){
 
 ###### GENERATING URN MODELS   ######################
 
-### Create a rank-abundance distribution based on Hoppe's urn scheme for a given theta
-### and sampling size nb_balls = J
-### Starting at zero species, corresponding to the single black ball with weight theta.
-### If picked, a new class is created, else the picked ball is duplicated
-### (abundance increases by one unity)
-
-### Added a much faster random number generator
-### https://cran.r-project.org/web/packages/dqrng/vignettes/dqrng.html
-### and simplified only for the Ewens sampling formula
-#' generate.hoppe.urn0
+#' Generation of a neutral partition given parameter theta using Hoppe urn model
 #'
-#' @param theta real
-#' @param J integer
+#' @description generate.hoppe.urn0 creates a rank-abundance distribution based on Hoppe's urn scheme for a given theta
+#' and sampling size nb_balls = J
+#' Starting at zero species, corresponding to the single black ball with weight theta.
+#' If picked, a new class is created, else the picked ball is duplicated
+#' (abundance increases by one unity)
+#' Added a much faster random number generator
+#' https://cran.r-project.org/web/packages/dqrng/vignettes/dqrng.html
 #'
-#' @return output_abundances a vector of integers
-#' @return k a real number
+#' @param theta is a real value
+#' @param J is the number of individuals, an integer
+#'
+#' @return output_abundances is a vector of integers
+#' @return k is the expected number of classes, a real number
 #' @export
 #'
 #' @examples
@@ -231,15 +232,17 @@ generate.hoppe.urn0 = function(theta,J) {
   return(output_abundances)
 }
 
-#### Generate Hoppe urn scheme, ultrafast option
-#### Based on the broken stick formulation
-#' generate.hoppe.urn
+#' Generation of a neutral partition given parameter theta using the Griffith-Engen-McCloskey broken stick model
 #'
-#' @param theta real
-#' @param J integer
+#' @description generate.hoppe.urn creates a rank-abundance distribution for a given theta and J objects.
+#' Beta-distributed random variables are picked from distribution Beta(1,theta),
+#' and the partition is the multinomial draw of J individuals drawn according to the GEM random variables
 #'
-#' @return output_abundances a vector of integers
-#' @return k a real number
+#' @param theta is a real value
+#' @param J is the number of individuals, an integer
+#'
+#' @return output_abundances is a vector of integers
+#' @return k is the expected number of classes, a real number
 #' @export
 #'
 #' @examples
@@ -280,25 +283,24 @@ generate.hoppe.urn = function(theta,J){
   return(list(abundance=output_abundance,k=kest))
 }
 
-#### Generate Pitman urn scheme
-### Create a rank-abundance distribution based on Pitman's urn scheme for a given (theta,sigma)
-### and sampling size nb_balls = J
-### Starting at zero species, corresponding to the single black ball with weight theta.
-## a species i, of k species total, is selected with probability:
-## (abundance[i]-sigma)/(n+theta),
-## sigma is non-null, n is the current number of balls
-## the probability to pick the black ball i (k*sigma+theta)/(n+theta)
 
-#### Generate Pitman urn scheme, ultrafast option
-#### Based on the broken stick formulation, exact
-#' generate.pitman.urn
+#' Generation of a Pitman partition given parameters theta and sigma using the Griffith-Engen-McCloskey broken stick model
 #'
-#' @param theta real
-#' @param sigma real
-#' @param J integer
+#' @description The Pitman urn scheme is as follows: starting at zero species, corresponding to the single black ball with weight theta.
+#' a species i, of k species total, is selected with probability:
+#' {(n_i-sigma)/(n+theta)},
+#' sigma is non-null, n is the current number of balls
+#' the probability to pick the black ball i {(k*sigma+theta)/(n+theta)}.
+#' This function generate.pitman.urn creates a rank-abundance distribution for a given theta,sigma and J objects.
+#' Beta-distributed random variables are picked from distribution Beta(1-sigma,theta+k*sigma),
+#' and the partition is the multinomial draw of J individuals drawn according to the GEM random variables
+#'
+#' @param theta is a real value
+#' @param sigma is a real value
+#' @param J is the number of individuals, an integer
 #'
 #' @return output_abundances a vector of integers
-#' @return k a real number
+#' @return k is the expected number of classes, a real number
 #' @export
 #'
 #' @examples

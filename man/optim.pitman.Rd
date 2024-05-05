@@ -2,14 +2,14 @@
 % Please edit documentation in R/neutr.R
 \name{optim.pitman}
 \alias{optim.pitman}
-\title{optim.pitman}
+\title{Maximum likelihood estimation of theta and sigma based on Pitman sampling formula}
 \usage{
 optim.pitman(input_abundances, init_vals = c(10, 0.1))
 }
 \arguments{
 \item{input_abundances}{a vector of integers}
 
-\item{init_vals}{a vector of two real numbers}
+\item{init_vals}{initial values of (theta,sigma), a vector of two real numbers}
 }
 \value{
 theta a real value
@@ -19,7 +19,13 @@ sigma a real value
 log-likelihood a real value
 }
 \description{
-optim.pitman
+optim.pitman computes the maximum likelihood estimate of Pitman (theta,sigma) parameters
+for a given species abundance distribution {n_1, ..., n_k}
+where n_i is the number of organisms of species i in the sample
+and k is the total number of species (for all i, n_i > 0)
+The input should be a vector and initial values of (theta,sigma)
+The argument should be init_vals=c(theta_init,sigma_init)
+with the condition theta_init>0.0 and 1.0 > sigma_init > 0.0
 }
 \examples{
 optim.pitman(c(234,87,34,5,4,3,3,2,2,1,1,1,1),c(10.0,0.1))

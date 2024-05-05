@@ -2,22 +2,24 @@
 % Please edit documentation in R/neutr.R
 \name{generate.hoppe.urn}
 \alias{generate.hoppe.urn}
-\title{generate.hoppe.urn}
+\title{Generation of a neutral partition given parameter theta using the Griffith-Engen-McCloskey broken stick model}
 \usage{
 generate.hoppe.urn(theta, J)
 }
 \arguments{
-\item{theta}{real}
+\item{theta}{is a real value}
 
-\item{J}{integer}
+\item{J}{is the number of individuals, an integer}
 }
 \value{
-output_abundances a vector of integers
+output_abundances is a vector of integers
 
-k a real number
+k is the expected number of classes, a real number
 }
 \description{
-generate.hoppe.urn
+generate.hoppe.urn creates a rank-abundance distribution for a given theta and J objects.
+Beta-distributed random variables are picked from distribution Beta(1,theta),
+and the partition is the multinomial draw of J individuals drawn according to the GEM random variables
 }
 \examples{
 generate.hoppe.urn(11.3,234373)

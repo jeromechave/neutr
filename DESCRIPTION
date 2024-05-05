@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Chave", "Jerome", , "jerome.chave@cnrs.fr", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Estimation of the Ewens, multideme and Pitman neutral models based on the maximization of the likelihood functions. Generation of typical Ewens and Pitman abundance distributions given the model parameters. 
+Description: Estimation of the Ewens, multideme and Pitman neutral models based on the maximization of the likelihood functions. Generation of typical abundance distributions of the Ewens and Pitman models given model parameter(s). 
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

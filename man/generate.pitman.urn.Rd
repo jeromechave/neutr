@@ -2,24 +2,31 @@
 % Please edit documentation in R/neutr.R
 \name{generate.pitman.urn}
 \alias{generate.pitman.urn}
-\title{generate.pitman.urn}
+\title{Generation of a Pitman partition given parameters theta and sigma using the Griffith-Engen-McCloskey broken stick model}
 \usage{
 generate.pitman.urn(theta, sigma, J)
 }
 \arguments{
-\item{theta}{real}
+\item{theta}{is a real value}
 
-\item{sigma}{real}
+\item{sigma}{is a real value}
 
-\item{J}{integer}
+\item{J}{is the number of individuals, an integer}
 }
 \value{
 output_abundances a vector of integers
 
-k a real number
+k is the expected number of classes, a real number
 }
 \description{
-generate.pitman.urn
+The Pitman urn scheme is as follows: starting at zero species, corresponding to the single black ball with weight theta.
+a species i, of k species total, is selected with probability:
+{(n_i-sigma)/(n+theta)},
+sigma is non-null, n is the current number of balls
+the probability to pick the black ball i {(k\emph{sigma+theta)/(n+theta)}.
+This function generate.pitman.urn creates a rank-abundance distribution for a given theta,sigma and J objects.
+Beta-distributed random variables are picked from distribution Beta(1-sigma,theta+k}sigma),
+and the partition is the multinomial draw of J individuals drawn according to the GEM random variables
 }
 \examples{
 generate.pitman.urn(11.3,0.1,234373)

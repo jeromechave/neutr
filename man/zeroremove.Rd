@@ -2,7 +2,7 @@
 % Please edit documentation in R/neutr.R
 \name{zeroremove}
 \alias{zeroremove}
-\title{zeroremove}
+\title{General use function}
 \usage{
 zeroremove(x)
 }
@@ -13,7 +13,7 @@ zeroremove(x)
 real
 }
 \description{
-zeroremove
+zeroremove is used to remove zeros and NAs in a vector of reals or of integers. This is a simple utility function.
 }
 \examples{
 zeroremove(c(2.1,0.0,3.0))

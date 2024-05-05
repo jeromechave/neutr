@@ -2,22 +2,28 @@
 % Please edit documentation in R/neutr.R
 \name{generate.hoppe.urn0}
 \alias{generate.hoppe.urn0}
-\title{generate.hoppe.urn0}
+\title{Generation of a neutral partition given parameter theta using Hoppe urn model}
 \usage{
 generate.hoppe.urn0(theta, J)
 }
 \arguments{
-\item{theta}{real}
+\item{theta}{is a real value}
 
-\item{J}{integer}
+\item{J}{is the number of individuals, an integer}
 }
 \value{
-output_abundances a vector of integers
+output_abundances is a vector of integers
 
-k a real number
+k is the expected number of classes, a real number
 }
 \description{
-generate.hoppe.urn0
+generate.hoppe.urn0 creates a rank-abundance distribution based on Hoppe's urn scheme for a given theta
+and sampling size nb_balls = J
+Starting at zero species, corresponding to the single black ball with weight theta.
+If picked, a new class is created, else the picked ball is duplicated
+(abundance increases by one unity)
+Added a much faster random number generator
+https://cran.r-project.org/web/packages/dqrng/vignettes/dqrng.html
 }
 \examples{
 generate.hoppe.urn0(11.3,234373)

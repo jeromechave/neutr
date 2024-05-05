@@ -2,24 +2,29 @@
 % Please edit documentation in R/neutr.R
 \name{optim.multideme}
 \alias{optim.multideme}
-\title{optim.multideme}
+\title{Maximum likelihood estimation of local immigration rates m_j based on multi-deme sampling formula}
 \usage{
 optim.multideme(input_abundance_matrix)
 }
 \arguments{
-\item{input_abundance_matrix}{a matrix of abundances}
+\item{input_abundance_matrix}{a matrix (n_ij) of abundances for species i in deme (local site) j}
 }
 \value{
-I a vector of real numbers
+I rescaled immigration rate, I=m/(1-m)*(J-1), a vector of real numbers
 
-m a vector of real numbers
+m immigration rate, a vector of real numbers
 
-J a vector of integers
+J local community size, a vector of integers
 
-k a vector of real numbers
+k number of classes/species, a vector of integers
 }
 \description{
-optim.multideme
+optim.multideme computes the maximum likelihood estimate for the multi-deme parameters
+for a given species abundance matrix {n_j1, ..., n_jk} for deme j
+where n_ji is the number of organisms of species i in deme j
+and k is the total number of species (for all i, n_i >= 0).
+The formulation in this description is that of species abundance distributions
+but is valid for any partitions in a subdivided setting (word frequencies in multiple books ..)
 }
 \examples{
 input_abundances1=c(234,87,34,5,4,3,3,2,2,1,1,1,1)
