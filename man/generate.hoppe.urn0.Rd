@@ -2,14 +2,14 @@
 % Please edit documentation in R/neutr.R
 \name{generate.hoppe.urn0}
 \alias{generate.hoppe.urn0}
-\title{Generation of a neutral partition given parameter theta using Hoppe urn model}
+\title{Generation of a neutral partition given parameter \eqn{\theta} using Hoppe urn model}
 \usage{
 generate.hoppe.urn0(theta, J)
 }
 \arguments{
-\item{theta}{is a real value}
+\item{theta}{parameter \eqn{\theta}, a real value}
 
-\item{J}{is the number of individuals, an integer}
+\item{J}{number of individuals, an integer}
 }
 \value{
 output_abundances is a vector of integers
@@ -17,13 +17,12 @@ output_abundances is a vector of integers
 k is the expected number of classes, a real number
 }
 \description{
-generate.hoppe.urn0 creates a rank-abundance distribution based on Hoppe's urn scheme for a given theta
-and sampling size nb_balls = J
-Starting at zero species, corresponding to the single black ball with weight theta.
-If picked, a new class is created, else the picked ball is duplicated
-(abundance increases by one unity)
-Added a much faster random number generator
-https://cran.r-project.org/web/packages/dqrng/vignettes/dqrng.html
+generate.hoppe.urn0 creates a rank-abundance distribution based on Hoppe's urn scheme
+for a given parameter \eqn{\theta} and sampling size J.
+The process starts at zero species, corresponding to the single black ball with weight \eqn{\theta}.
+If the black ball is picked, a new class is created, else the picked colored ball is duplicated
+(its abundance increases by one unity).
+Added a much faster random number generator (dqrng package).
 }
 \examples{
 generate.hoppe.urn0(11.3,234373)

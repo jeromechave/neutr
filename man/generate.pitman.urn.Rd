@@ -2,30 +2,30 @@
 % Please edit documentation in R/neutr.R
 \name{generate.pitman.urn}
 \alias{generate.pitman.urn}
-\title{Generation of a Pitman partition given parameters theta and sigma using the Griffith-Engen-McCloskey broken stick model}
+\title{Generation of a Pitman partition given parameters \eqn{\theta} and \eqn{\sigma} from the Griffith-Engen-McCloskey representation}
 \usage{
 generate.pitman.urn(theta, sigma, J)
 }
 \arguments{
-\item{theta}{is a real value}
+\item{theta}{parameter \eqn{\theta},  a real value}
 
-\item{sigma}{is a real value}
+\item{sigma}{parameter \eqn{\sigma},  a real value}
 
 \item{J}{is the number of individuals, an integer}
 }
 \value{
-output_abundances a vector of integers
+output_abundances is a vector of integers
 
 k is the expected number of classes, a real number
 }
 \description{
-The Pitman urn scheme is as follows: starting at zero species, corresponding to the single black ball with weight theta.
+The Pitman urn scheme is as follows: starting at zero species, corresponding to the single black ball with weight \eqn{\theta}
 a species i, of k species total, is selected with probability:
-{(n_i-sigma)/(n+theta)},
-sigma is non-null, n is the current number of balls
-the probability to pick the black ball i {(k\emph{sigma+theta)/(n+theta)}.
+\eqn{(n_i-\sigma)/(n+\theta)},
+\eqn{\sigma} is strictly between 0.0 and 1.0, n is the current number of balls
+the probability to pick the black ball i \eqn{(k\sigma+\theta)/(n+\theta)}.
 This function generate.pitman.urn creates a rank-abundance distribution for a given theta,sigma and J objects.
-Beta-distributed random variables are picked from distribution Beta(1-sigma,theta+k}sigma),
+Beta-distributed random variables are picked from distribution \eqn{Beta(1-\sigma,\theta+k\sigma)},
 and the partition is the multinomial draw of J individuals drawn according to the GEM random variables
 }
 \examples{

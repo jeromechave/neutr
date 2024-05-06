@@ -2,7 +2,7 @@
 % Please edit documentation in R/neutr.R
 \name{optim.ewens}
 \alias{optim.ewens}
-\title{Maximum likelihood estimation of theta based on Ewens sampling formula}
+\title{Maximum likelihood estimation of \eqn{\theta} based on Ewens sampling formula}
 \usage{
 optim.ewens(input_abundances)
 }
@@ -10,15 +10,15 @@ optim.ewens(input_abundances)
 \item{input_abundances}{a vector of integers}
 }
 \value{
-theta parameter of Ewens sampling formula, a real value
+theta the \eqn{\theta} parameter of Ewens sampling formula, a real value
 
-logl maximal value of the log-likelihood, a real value
+logl the maximal value of the log-likelihood, a real value
 }
 \description{
-optim.ewens computes the maximum likelihood estimate of Ewens theta parameter
-for a given species abundance distribution {n_1, ..., n_k}
-where n_i is the number of organisms of species i in the sample
-and k is the total number of species (for all i, n_i > 0)
+optim.ewens computes the maximum likelihood estimate of Ewens \eqn{\theta} parameter
+for a given species abundance distribution \eqn{(n_1, ..., n_k)}
+where \eqn{n_i} is the number of organisms of species i in the sample
+and k is the total number of species in the sample (for all \eqn{i, n_i > 0}).
 The input should be a vector
 }
 \examples{
