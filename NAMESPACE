@@ -3,6 +3,8 @@
 export(generate.hoppe.urn)
 export(generate.hoppe.urn0)
 export(generate.pitman.urn)
+export(kest)
+export(kest.gt)
 export(optim.ewens)
 export(optim.multideme)
 export(optim.pitman)

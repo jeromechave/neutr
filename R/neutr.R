@@ -275,7 +275,12 @@ generate.hoppe.urn = function(theta,J){
   Ps=Ws;for(i in 1:k2) Ps[i]=Zs[i]*Ws[i]
 
   ## Multinomial draw of J individuals from probability density Ps
-  x=stats::rmultinom(1,J,prob=Ps)
+  chunksize=1
+  if(J > .Machine$integer.max) chunksize = (J/.Machine$integer.max)*2.0
+  chunks <- J / chunksize
+
+  x=rowSums(stats::rmultinom(chunksize, chunks, prob=Ps))
+  ##x=stats::rmultinom(1,J,prob=Ps)
 
   ## Filter and sort the species abundance distribution
   abundance=if(length(which(x==0)!=0)) x[-which(x==0)]
@@ -343,5 +348,45 @@ generate.pitman.urn = function(theta,sigma,J){
   ## Output the species abundance distribution and the expected class number kest
   return(list(abundance=output_abundance,k=kest))
 
+}
+
+#' Expected number of classes given parameters \eqn{\theta} and sample size J for the Hoppe urn model
+#'
+#' @description The expected number of species is computed using an exact expression
+#' based on the diagamma function.
+#'
+#' @param theta parameter \eqn{\theta},  a real value
+#' @param J is the number of individuals, an integer
+#'
+#' @return k is the expected number of classes, a real number
+#' @export
+#'
+#' @examples
+#' kest(11.3,234373)
+kest=function(theta,J){
+  theta*digamma(theta+J)-theta*digamma(theta)
+}
+
+#' Expected number of classes with more than N individuals given parameters \eqn{\theta} and sample size J for the Hoppe urn model
+#'
+#' @description The expected number of species \eqn{>N} is computed using 100 runs of
+#' the Hoppe urn scheme
+#'
+#' @param theta parameter \eqn{\theta},  a real value
+#' @param J is the number of individuals, an integer
+#' @param N is the minimal abundance, an integer
+#'
+#' @return k is the expected number of classes \eqn{>N}, a real number
+#' @export
+#'
+#' @examples
+#' kest.gt(11.3,234373,50)
+kest.gt=function(theta,J,N){
+  nbsp=c()
+  for(i in 1:100){
+    kk=sum(generate.hoppe.urn(theta,J)$abundance > N)
+    nbsp=c(nbsp,kk)
+  }
+  return(mean(nbsp))
 }
 
