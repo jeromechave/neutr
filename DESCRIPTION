@@ -16,4 +16,5 @@ VignetteBuilder: knitr
 Imports: 
     dqrng,
     nloptr,
-    pracma
+    pracma,
+    stats

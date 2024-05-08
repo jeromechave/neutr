@@ -1,3 +1,4 @@
+usethis::use_package("stats")
 usethis::use_package("dqrng")
 usethis::use_package("pracma")
 usethis::use_package("nloptr")
@@ -367,10 +368,37 @@ kest=function(theta,J){
   theta*digamma(theta+J)-theta*digamma(theta)
 }
 
-#' Expected number of classes with more than N individuals given parameters \eqn{\theta} and sample size J for the Hoppe urn model
+#' Expected number of classes with more than N individuals given parameters \eqn{\theta} and sample size J using the GEM representation
 #'
 #' @description The expected number of species \eqn{>N} is computed using 100 runs of
-#' the Hoppe urn scheme
+#' the neutral model with the Griffiths-Engen-McCloskey representation
+#'
+#' @param theta parameter \eqn{\theta},  a real value
+#' @param J is the number of individuals, an integer
+#' @param N is the minimal abundance, an integer
+#'
+#' @return k is the expected number of classes \eqn{>N}, a real number
+#' @return sigmak is the standard deviation of the number of classes \eqn{>N}, a real number
+#' @export
+#'
+#' @examples
+#' kest.gt0(11.3,234373,50)
+kest.gt0=function(theta,J,N){
+  nbsp=c()
+  for(i in 1:100){
+    kk=sum(generate.hoppe.urn(theta,J)$abundance > N)
+    nbsp=c(nbsp,kk)
+  }
+  return(list(k=mean(nbsp),sigmak=stats::sd(nbsp)))
+}
+
+#' Expected number of classes with more than N individuals given parameters \eqn{\theta} and sample size J using the species frequency spectrum
+#'
+#' @description The expected number of species \eqn{>N} is computed using the approximation
+#'  based on the species frequency spectrum \eqn{\psi(x)=\theta x^{-1}(1-x)^{\theta-1}}
+#'  such that the number of species \eqn{>N} is the integral from N/J to 1 of \eqn{(1-(1-x)^J)\psi(x)}.
+#'  This is an approximation of the exact formula, but it turns out to be accurate.
+#'
 #'
 #' @param theta parameter \eqn{\theta},  a real value
 #' @param J is the number of individuals, an integer
@@ -382,11 +410,8 @@ kest=function(theta,J){
 #' @examples
 #' kest.gt(11.3,234373,50)
 kest.gt=function(theta,J,N){
-  nbsp=c()
-  for(i in 1:100){
-    kk=sum(generate.hoppe.urn(theta,J)$abundance > N)
-    nbsp=c(nbsp,kk)
-  }
-  return(mean(nbsp))
+  f <- function(x) theta*(1-(1-x)^J)/x*(1-x)^(theta-1)
+  #f <- function(x) theta*x^(-1)*(1-x)^(theta-1)
+  stats::integrate(f,N/J,1.0)
 }
 
