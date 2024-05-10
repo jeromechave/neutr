@@ -279,7 +279,6 @@ generate.hoppe.urn = function(theta,J){
   chunksize=1
   if(J > .Machine$integer.max) chunksize = (J/.Machine$integer.max)*2.0
   chunks <- J / chunksize
-
   x=rowSums(stats::rmultinom(chunksize, chunks, prob=Ps))
   ##x=stats::rmultinom(1,J,prob=Ps)
 
@@ -341,7 +340,11 @@ generate.pitman.urn = function(theta,sigma,J){
   Ps=rep(0,k2); for(i in 1:k2) Ps[i]=Zs[i]*Ws[i]
 
   ## Multinomial draw of J individuals from probability density Ps
-  x=stats::rmultinom(1,J,prob=Ps)
+  chunksize=1
+  if(J > .Machine$integer.max) chunksize = (J/.Machine$integer.max)*2.0
+  chunks <- J / chunksize
+  x=rowSums(stats::rmultinom(chunksize, chunks, prob=Ps))
+  ##x=stats::rmultinom(1,J,prob=Ps)
 
   abundance=if(length(which(x==0)!=0)) x[-which(x==0)]
   output_abundance = sort(abundance, decreasing = TRUE)
