@@ -1,3 +1,7 @@
+## neutr R package
+## Jerome Chave
+
+
 Inference and fast generation of neutral species assemblages 
 
 Te neutr R package contains a number of functions that perform the following tasks.
