@@ -1,6 +1,6 @@
-## neutr R package
-# Jerome Chave
-# May 2024
+# neutr R package
+### Jerome Chave
+### May 2024
 
 Parameter inference and fast generation for three classes of neutral species assemblage models.
 
