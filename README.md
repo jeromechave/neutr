@@ -1,8 +1,8 @@
 ## neutr R package
-## Jerome Chave
+# Jerome Chave
+# May 2024
 
-
-Inference and fast generation of neutral species assemblages 
+Parameter inference and fast generation for three classes of neutral species assemblage models.
 
 Te neutr R package contains a number of functions that perform the following tasks.
 Estimation of the model parameter for three neutral models: the Ewens model, the multideme model and the Pitman models. 
