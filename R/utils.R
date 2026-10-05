@@ -111,7 +111,8 @@ gem_abundances <- function(theta, sigma, J, max_block = 2e6, urn_max = 2e6,
     block <- as.integer(min(max_block, max(64, ceiling(3 * min(kh, remaining)))))
 
     idx <- seq_len(block)
-    W <- stats::rbeta(block, 1 - sigma, theta + idx * sigma)
+    ###W <- stats::rbeta(block, 1 - sigma, theta + idx * sigma)
+    W <- stats::rbeta(block, 1 - sigma, theta + (idx - 1L) * sigma)
     one_minus <- 1 - W
     P <- W * c(1, cumprod(one_minus[-block]))
     draw <- rmultinom_big(remaining, c(P, prod(one_minus)))
