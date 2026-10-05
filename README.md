@@ -2,18 +2,19 @@
 ### Jerome Chave
 jerome.chave@cnrs.fr
 
-History
-* First release May 2024
-* Second release October 2026
-* Fixes October 2026: 
-1. package without usethis dependency
-2. fixed incorrect stick-breaking equation
-3. fixed random number generator bug for large values
-4. fixed comparative maximum likelihood value
-5. theta no longer restricted to be ≥ 1
-6. now Ewens and Pitman likelihoods are comparable
-7. package no longer calls nloptr and pracma
-8. cleaner management of boundary values
+## History
+
+- **First release**: May 2024
+- **Second release**: October 2026
+  - Fixes:
+    1. Package without `usethis` dependency
+    2. Fixed incorrect stick-breaking equation
+    3. Fixed random number generator bug for large values
+    4. Fixed comparative maximum likelihood value
+    5. Theta no longer restricted to be ≥ 1
+    6. Now Ewen’s and Pitman likelihoods are comparable
+    7. Package no longer calls `nloptr` and `pracma`
+    8. Cleaner management of boundary values
 
 Parameter inference and fast generation for three classes of neutral species assemblage models.
 
