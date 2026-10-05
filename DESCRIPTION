@@ -1,20 +1,27 @@
 Package: neutr
-Title: Inference and fast generation of neutral species assemblages 
-Version: 0.0.0.9000
+Title: Inference and Fast Generation of Neutral Species Assemblages
+Version: 0.1.1
 Authors@R: 
-    person("Chave", "Jerome", , "jerome.chave@cnrs.fr", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Estimation of the Ewens, multideme and Pitman neutral models based on the maximization of the likelihood functions. Generation of typical abundance distributions of the Ewens and Pitman models given model parameter(s). 
+    person("Jerome", "Chave", , "jerome.chave@cnrs.fr", role = c("aut", "cre"))
+Description: Maximum likelihood estimation of the parameters of three neutral
+    models of species assemblages (the Ewens model, the multideme model and the
+    Pitman model), and fast, exact generation of typical species abundance
+    distributions of the Ewens and Pitman models given their parameters.
+    Calculations scale to very large samples, on the order of 10^12 individuals.
 License: GPL-3
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
-Suggests: 
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
+URL: https://github.com/jeromechave/neutr
+BugReports: https://github.com/jeromechave/neutr/issues
+Depends: R (>= 3.5.0)
 Imports: 
     dqrng,
-    nloptr,
-    pracma,
     stats
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1

@@ -1,8 +1,8 @@
 ---
-title: "Using-the-neutr-package"
+title: "Using the neutr package"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using-the-neutr-package}
+  %\VignetteIndexEntry{Using the neutr package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,10 +10,155 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4
 )
 ```
 
 ```{r setup}
 library(neutr)
+```
+
+The `neutr` package does two things for neutral models of species assemblages:
+
+* **inference**: maximum likelihood estimation of the parameters of the Ewens
+  model (`optim.ewens()`), the Pitman model (`optim.pitman()`) and the multideme
+  model (`optim.multideme()`);
+* **generation**: fast and exact simulation of typical species abundance
+  distributions of the Ewens model (`generate.hoppe.urn0()`,
+  `generate.hoppe.urn()`) and of the Pitman model (`generate.pitman.urn()`),
+  including for samples of $10^{12}$ individuals and more.
+
+A species abundance distribution is a vector of positive counts
+$(n_1, \dots, n_k)$: $k$ species, $J = \sum_i n_i$ individuals.
+
+## Generating a community
+
+Ewens' model has a single parameter $\theta$ (the fundamental biodiversity
+number). `generate.hoppe.urn()` returns the abundances, sorted in decreasing
+order, together with the *expected* number of species for these parameters:
+
+```{r generate}
+set.seed(42)
+com <- generate.hoppe.urn(theta = 11.3, J = 234373)
+length(com$abundance)   # species in this draw
+com$k                   # expected number of species
+head(com$abundance)
+sum(com$abundance)      # always exactly J
+```
+
+```{r rank-abundance, fig.cap = "Rank-abundance curve of the simulated community."}
+plot(com$abundance, log = "y", xlab = "Rank", ylab = "Abundance", pch = 16, cex = 0.6)
+```
+
+The generator works with the Griffiths-Engen-McCloskey representation of the
+model, so its cost hardly depends on the number of individuals:
+
+```{r huge}
+huge <- generate.hoppe.urn(theta = 100, J = 1e12)
+length(huge$abundance)
+sum(huge$abundance) == 1e12
+```
+
+`generate.hoppe.urn0()` simulates Hoppe's urn exactly, individual by individual
+(vectorised, so still fast for samples of millions). It is mostly useful as a
+reference. It draws random numbers with the `dqrng` package, which has its own
+random stream: **`set.seed()` does not affect it**, use its `seed` argument:
+
+```{r urn0}
+a <- generate.hoppe.urn0(theta = 11.3, J = 1e5, seed = 1)
+b <- generate.hoppe.urn0(theta = 11.3, J = 1e5, seed = 1)
+identical(a, b)
+```
+
+The Pitman model adds a discount parameter $\sigma \in (0, 1)$, which gives
+heavier tails (more rare species) than Ewens' model:
+
+```{r pitman-gen}
+set.seed(1)
+pit <- generate.pitman.urn(theta = 10, sigma = 0.3, J = 1e5)
+c(species = length(pit$abundance), expected = round(pit$k, 1))
+```
+
+## Estimating the parameters
+
+`optim.ewens()` gives the maximum likelihood estimate of $\theta$, which solves
+$k = \theta[\psi(\theta + J) - \psi(\theta)]$:
+
+```{r ewens}
+ab <- c(234, 87, 34, 5, 4, 3, 3, 2, 2, 1, 1, 1, 1)
+ew <- optim.ewens(ab)
+ew
+```
+
+`optim.pitman()` estimates $(\theta, \sigma)$:
+
+```{r pitman}
+pm <- optim.pitman(ab, init_vals = c(10, 0.1))
+pm
+```
+
+### Comparing the two models
+
+The Ewens model is the Pitman model with $\sigma = 0$, so the two are nested and
+can be compared with a likelihood-ratio test or AIC. The `logl` element returned
+by `optim.ewens()` and `optim.pitman()` is on the same scale for both functions:
+
+```{r lrt}
+lrt <- 2 * (pm$logl - ew$logl)
+c(LRT = lrt, p.value = pchisq(lrt, df = 1, lower.tail = FALSE))
+c(Ewens = -2 * ew$logl + 2 * 1, Pitman = -2 * pm$logl + 2 * 2)   # AIC
+```
+
+(As $\sigma = 0$ lies on the boundary of the parameter space, the $\chi^2_1$
+p-value is conservative; halve it for the usual boundary correction.)
+
+### Recovering known parameters
+
+```{r recover}
+set.seed(2024)
+sim <- generate.pitman.urn(theta = 10, sigma = 0.3, J = 1e5)$abundance
+fit <- optim.pitman(sim)
+round(c(theta = fit$theta, sigma = fit$sigma), 3)   # truth: 10 and 0.3
+```
+
+### Boundary estimates
+
+When the likelihood has no interior maximum for the data at hand, the estimate
+lands on the edge of the search interval and the functions issue a warning:
+
+```{r boundary}
+tryCatch(optim.ewens(rep(1, 20)), warning = function(w) conditionMessage(w))
+```
+
+## The multideme model
+
+`optim.multideme()` takes a matrix with **one row per deme (local community) and
+one column per species**. The regional abundance distribution is the sum of the
+rows. For each deme it estimates the rescaled immigration rate
+$I = \frac{m}{1 - m}(J - 1)$ and the immigration rate $m$:
+
+```{r multideme}
+demes <- rbind(
+  c(44, 37, 34, 5, 4, 3, 3, 2, 2, 1, 1, 1, 1),
+  c(240, 20, 48, 2, 21, 1, 3, 2, 5, 2, 0, 1, 1)
+)
+optim.multideme(demes)
+```
+
+Use `verbose = TRUE` to follow the progress over many demes.
+
+## Expected number of species
+
+`kest()` is the exact expected number of species in the Ewens model.
+`kest.gt()` and `kest.gt0()` give the expected number of species with more than
+`N` individuals, deterministically (an approximation, via an integral) and by
+simulation:
+
+```{r richness}
+kest(11.3, 234373)
+kest.gt(11.3, 234373, N = 50)$value
+set.seed(3)
+kest.gt0(11.3, 234373, N = 50, nrep = 50)
 ```

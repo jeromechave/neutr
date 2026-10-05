@@ -1,2 +1,5 @@
 ^neutr\.Rproj$
 ^\.Rproj\.user$
+^\.github$
+^.*\.Rcheck$
+^neutr_.*\.tar\.gz$
