@@ -1,7 +1,6 @@
-# neutr R package
-# Parameter inference and fast generation for three classes of neutral species assemblage models.
-
-# Jerome Chave
+## neutr R package
+### Parameter inference and fast generation for three classes of neutral species assemblage models.
+### Jerome Chave
 jerome.chave@cnrs.fr
 
 ## History
