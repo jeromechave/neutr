@@ -1,4 +1,6 @@
-# neutr R package
+## neutr R package
+## Parameter inference and fast generation for three classes of neutral species assemblage models.
+
 ### Jerome Chave
 jerome.chave@cnrs.fr
 
@@ -16,7 +18,8 @@ jerome.chave@cnrs.fr
     7. Package no longer calls `nloptr` and `pracma`
     8. Cleaner management of boundary values
 
-Parameter inference and fast generation for three classes of neutral species assemblage models.
+
+## Description
 
 The neutr R package contains a number of functions that perform the following tasks.
 * Estimation of the model parameter for three neutral models: the Ewens model, the multideme model and the Pitman models. 
