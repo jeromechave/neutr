@@ -2,10 +2,9 @@
 ### Jerome Chave
 jerome.chave@cnrs.fr
 
-First release May 2024
-Second release October 2026
-
-Fixes: 
+*First release May 2024
+*Second release October 2026
+*Fixes: 
 1. package without usethis dependency
 2. fixed incorrect stick-breaking equation
 3. fixed random number generator bug for large values
