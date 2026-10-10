@@ -1,12 +1,21 @@
 #' neutr: Inference and Fast Generation of Neutral Species Assemblages
 #'
-#' Parameter inference and fast generation for three classes of neutral species
-#' assemblage models: the Ewens model, the multideme model and the Pitman model.
+#' Parameter inference and fast generation for neutral species assemblage models:
+#' the Ewens model, the Etienne model (a local community with dispersal
+#' limitation), the multideme model and the Pitman model.
 #'
 #' @section Estimation:
 #' Parameters are estimated by maximising the likelihood: [optim.ewens()] for the
-#' Ewens model, [optim.pitman()] for the Pitman model and [optim.multideme()] for
-#' the multideme model.
+#' Ewens model, [optim.etienne()] for the Etienne model, [optim.pitman()] for the
+#' Pitman model and [optim.multideme()] for the multideme model. The Ewens model is
+#' nested in both the Etienne model (\eqn{m = 1}) and the Pitman model
+#' (\eqn{\sigma = 0}), and the three functions return their log-likelihood on the
+#' same scale.
+#'
+#' @section Etienne sampling formula:
+#' [logl.etienne()] evaluates the likelihood of Etienne's sampling formula and
+#' [logkda()] its coefficients \eqn{K(D,A)}, computed on the log scale so that
+#' large samples cannot overflow.
 #'
 #' @section Generation:
 #' [generate.hoppe.urn0()] simulates Hoppe's urn exactly, individual by individual;

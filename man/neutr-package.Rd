@@ -6,14 +6,25 @@
 \alias{neutr-package}
 \title{neutr: Inference and Fast Generation of Neutral Species Assemblages}
 \description{
-Parameter inference and fast generation for three classes of neutral species
-assemblage models: the Ewens model, the multideme model and the Pitman model.
+Parameter inference and fast generation for neutral species assemblage models:
+the Ewens model, the Etienne model (a local community with dispersal
+limitation), the multideme model and the Pitman model.
 }
 \section{Estimation}{
 
 Parameters are estimated by maximising the likelihood: \code{\link[=optim.ewens]{optim.ewens()}} for the
-Ewens model, \code{\link[=optim.pitman]{optim.pitman()}} for the Pitman model and \code{\link[=optim.multideme]{optim.multideme()}} for
-the multideme model.
+Ewens model, \code{\link[=optim.etienne]{optim.etienne()}} for the Etienne model, \code{\link[=optim.pitman]{optim.pitman()}} for the
+Pitman model and \code{\link[=optim.multideme]{optim.multideme()}} for the multideme model. The Ewens model is
+nested in both the Etienne model (\eqn{m = 1}) and the Pitman model
+(\eqn{\sigma = 0}), and the three functions return their log-likelihood on the
+same scale.
+}
+
+\section{Etienne sampling formula}{
+
+\code{\link[=logl.etienne]{logl.etienne()}} evaluates the likelihood of Etienne's sampling formula and
+\code{\link[=logkda]{logkda()}} its coefficients \eqn{K(D,A)}, computed on the log scale so that
+large samples cannot overflow.
 }
 
 \section{Generation}{

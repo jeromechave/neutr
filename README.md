@@ -16,16 +16,17 @@ jerome.chave@cnrs.fr
     6. Now Ewen’s and Pitman likelihoods are comparable
     7. Package no longer calls `nloptr` and `pracma`
     8. Cleaner management of boundary values
+    9. Now includes Etienne Sampling Formula (from untb package, with improvements)
 
 
 ## Description
 
 The neutr R package contains a number of functions that perform the following tasks.
-* Estimation of the model parameter for three neutral models: the Ewens model, the multideme model and the Pitman models. 
+* Estimation of the model parameter for four neutral models: the Ewens model, the Etienne model (a local community with dispersal limitation), the multideme model and the Pitman models. 
 * Parameter inference is based on the maximization of the likelihood functions. 
 * The generation of typical abundance distributions of the Ewens and Pitman models given model parameter(s). 
 
-The above tasks can be performed with very large sample sizes, on the order of up to 10^12 individuals. 
+The above tasks can be performed with very large sample sizes, on the order of up to 10^12 individuals (up to about 10^5 individuals for the Etienne model). 
 
 ## Installation
 
@@ -54,6 +55,9 @@ pm <- optim.pitman(ab, c(10, 0.1))           # Pitman theta and sigma
 # Compare the nested models (Ewens is Pitman with sigma = 0): the log-likelihoods are comparable
 2 * (pm$logl - ew$logl)                      # likelihood-ratio statistic
 
+# Etienne model: a local community with dispersal limitation (Ewens is Etienne with m = 1)
+et <- optim.etienne(c(8, 5, 3, 2, 1, 1))     # theta = 7.05, m = 0.226 (Etienne 2005)
+
 # Multideme model: one row per deme, one column per species
 optim.multideme(rbind(c(44, 37, 34, 5, 4, 3, 3, 2, 2, 1, 1, 1, 1),
                       c(240, 20, 48, 2, 21, 1, 3, 2, 5, 2, 0, 1, 1)))
@@ -67,6 +71,9 @@ See `vignette("Using-the-neutr-package")` for a longer tour.
 |---|---|
 | ML estimate of Ewens' $\theta$ | `optim.ewens()` |
 | ML estimate of Pitman's $(\theta, \sigma)$ | `optim.pitman()` |
+| ML estimate of Etienne's $(\theta, m)$ (local community with dispersal limitation) | `optim.etienne()` |
+| Log-likelihood of Etienne's sampling formula | `logl.etienne()` |
+| Etienne's coefficients $K(D,A)$, on the log scale | `logkda()` |
 | ML estimate of the local immigration rates (K demes) | `optim.multideme()` |
 | Exact Hoppe urn, individual by individual | `generate.hoppe.urn0()` |
 | Ewens community via the GEM representation (any sample size) | `generate.hoppe.urn()` |
@@ -79,8 +86,15 @@ See `vignette("Using-the-neutr-package")` for a longer tour.
 
 * `generate.hoppe.urn0()` uses the `dqrng` random stream, which `set.seed()` does not
   control: pass its `seed` argument for reproducibility. The other generators follow `set.seed()`.
-* The `logl` returned by `optim.ewens()` and `optim.pitman()` is on the same scale, so the two
-  (nested) models can be compared by likelihood ratio or AIC.
+* The `logl` returned by `optim.ewens()`, `optim.pitman()` and `optim.etienne()` is on the same
+  scale. The Ewens model is nested in both the Pitman model (`sigma = 0`) and the Etienne model
+  (`m = 1`), so the models can be compared by likelihood ratio or AIC.
+* `optim.etienne()` and `optim.multideme()` return standard errors, and likelihood-ratio
+  confidence intervals with `ci = TRUE`; `optim.etienne()` also lists all the local maxima it
+  finds. Together with the vignette section on TeTame data files, this covers the functionality
+  of the TeTame software.
+* For repeated evaluations of `logl.etienne()` on the same data, compute `logkda()` once and pass
+  it as `log_kda`.
 * Estimates that fall on the edge of their search interval trigger a warning: the likelihood then has
   no interior maximum for those data (e.g. all species are singletons).
 * `optim.multideme()` expects **rows = demes, columns = species**.

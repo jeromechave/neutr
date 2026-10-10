@@ -110,12 +110,25 @@ optim.ewens <- function(input_abundances) {
 #'   of the regional pool, for which the likelihood keeps increasing with `I`), a
 #'   warning is issued; increase `I_max` to explore larger values.
 #'
+#' @section Uncertainty:
+#' The standard errors `se_I` and `se_m` are obtained from the exact second
+#' derivative of the log-likelihood in `I` (and the delta method for `m`); they are
+#' `NA` when the estimate lies on a bound of the search interval or for a deme with
+#' a single species. With `ci = TRUE`, likelihood-ratio confidence intervals are
+#' also returned: the range of `I` over which the log-likelihood stays within
+#' `qchisq(level, 1) / 2` of its maximum. A limit equal to a bound of the search
+#' interval means that the interval extends at least to that bound. These replace
+#' the `Std_I` and `Std_m` columns of the TeTame software.
+#'
 #' @param input_abundance_matrix a matrix \eqn{n_{ij}} of abundances (one row per
 #'   deme (local site) j, one column per species i). A data frame of counts is accepted.
 #' @param verbose if `TRUE`, report progress over the demes with [message()]
 #'   (default `FALSE`)
 #' @param I_max upper bound of the search interval for `I`: `NULL` (default, the
 #'   deme size `J`), or a positive number, or one number per deme
+#' @param ci if `TRUE`, also return likelihood-ratio confidence intervals (default
+#'   `FALSE`)
+#' @param level confidence level of the intervals (default 0.95)
 #'
 #' @return A list with
 #' \describe{
@@ -125,8 +138,11 @@ optim.ewens <- function(input_abundances) {
 #'   \item{k}{number of classes/species, a vector of integers}
 #'   \item{logl}{maximal log-likelihood of each deme (up to a constant that does not
 #'     depend on `I`), a vector of real numbers}
+#'   \item{se_I, se_m}{standard errors of `I` and `m`, vectors of real numbers}
+#'   \item{ci_I, ci_m}{only if `ci = TRUE`: confidence intervals of `I` and `m`,
+#'     matrices with one row per deme and columns `lower` and `upper`}
 #' }
-#' @seealso [optim.ewens()], [optim.pitman()]
+#' @seealso [optim.ewens()], [optim.pitman()], [optim.etienne()]
 #' @export
 #'
 #' @examples
@@ -134,7 +150,8 @@ optim.ewens <- function(input_abundances) {
 #' input_abundances2 <- c(240, 20, 48, 2, 21, 1, 3, 2, 5, 2, 0, 1, 1)
 #' input_abundance_matrix <- rbind(input_abundances1, input_abundances2)
 #' optim.multideme(input_abundance_matrix)
-optim.multideme <- function(input_abundance_matrix, verbose = FALSE, I_max = NULL) {
+optim.multideme <- function(input_abundance_matrix, verbose = FALSE, I_max = NULL,
+                            ci = FALSE, level = 0.95) {
   fn <- "optim.multideme"
   mat <- tryCatch(as.matrix(input_abundance_matrix), error = function(e) NULL)
   if (is.null(mat) || !is.numeric(mat) || length(mat) == 0L || length(dim(mat)) != 2L)
@@ -155,6 +172,8 @@ optim.multideme <- function(input_abundance_matrix, verbose = FALSE, I_max = NUL
     I_max <- rep_len(I_max, demes)
   }
 
+  check_ci_args(ci, level, fn)
+
   regional <- colSums(mat)                     # regional abundance of each species
   if (sum(regional) == 0) stop(fn, "(): the matrix contains no individuals.", call. = FALSE)
   x <- regional / sum(regional)                # regional species abundance distribution
@@ -163,6 +182,8 @@ optim.multideme <- function(input_abundance_matrix, verbose = FALSE, I_max = NUL
   J <- rep(0, demes)
   k <- rep(0, demes)
   logl <- rep(NA_real_, demes)
+  se_I <- rep(NA_real_, demes)
+  ci_I <- matrix(NA_real_, demes, 2L, dimnames = list(NULL, c("lower", "upper")))
   I_lower <- 1e-6
 
   for (j in seq_len(demes)) {
@@ -188,6 +209,12 @@ optim.multideme <- function(input_abundance_matrix, verbose = FALSE, I_max = NUL
     if (k[j] == 1L) {
       I[j] <- 0                                # likelihood maximal at I = 0
       logl[j] <- logL(I_lower)
+      if (ci) {
+        upper <- if (is.null(I_max)) J0 else I_max[j]
+        target <- -logl[j] + stats::qchisq(level, df = 1) / 2
+        ci_I[j, ] <- c(0, exp(lr_interval(function(lI) -logL(exp(lI)), log(I_lower),
+                                          log(I_lower), log(max(upper, I_lower)), target)[2]))
+      }
       next
     }
 
@@ -207,11 +234,29 @@ optim.multideme <- function(input_abundance_matrix, verbose = FALSE, I_max = NUL
                            tol = 1e-10)
     I[j] <- exp(opt$maximum)
     logl[j] <- opt$objective
-    warn_boundary(I[j], I_lower, upper, sprintf("I[%d]", j), fn, log_scale = TRUE)
+    on_bound <- warn_boundary(I[j], I_lower, upper, sprintf("I[%d]", j), fn, log_scale = TRUE)
+
+    ## standard error from the exact second derivative of the log-likelihood in I
+    if (!on_bound) {
+      d2 <- sum(x1^2 * (trigamma(I[j] * x1 + n1) - trigamma(I[j] * x1))) -
+        trigamma(I[j] + J0) + trigamma(I[j])
+      if (is.finite(d2) && d2 < 0) se_I[j] <- 1 / sqrt(-d2)
+    }
+    if (ci) {
+      target <- -logl[j] + stats::qchisq(level, df = 1) / 2
+      ci_I[j, ] <- exp(lr_interval(function(lI) -logL(exp(lI)), log(I[j]),
+                                   log(I_lower), log(upper), target))
+    }
   }
   m <- I / (J - 1 + I)
+  se_m <- se_I * (J - 1) / (J - 1 + I)^2
 
-  list(I = I, m = m, J = J, k = k, logl = logl)
+  out <- list(I = I, m = m, J = J, k = k, logl = logl, se_I = se_I, se_m = se_m)
+  if (ci) {
+    out$ci_I <- ci_I
+    out$ci_m <- ci_I / (J - 1 + ci_I)
+  }
+  out
 }
 
 #' Maximum likelihood estimation of \eqn{\theta} and \eqn{\sigma} based on Pitman sampling formula

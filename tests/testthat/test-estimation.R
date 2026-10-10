@@ -154,7 +154,7 @@ m2 <- rbind(c(44, 37, 34, 5, 4, 3, 3, 2, 2, 1, 1, 1, 1),
 
 test_that("optim.multideme estimates the immigration rates", {
   fit <- optim.multideme(m2)
-  expect_named(fit, c("I", "m", "J", "k", "logl"))
+  expect_named(fit, c("I", "m", "J", "k", "logl", "se_I", "se_m"))
   expect_equal(fit$I, c(69.444824, 197.921875), tolerance = 1e-4)
   expect_equal(fit$m, c(0.33638443, 0.36454946), tolerance = 1e-4)
   expect_equal(fit$J, c(138, 346))
@@ -213,3 +213,58 @@ test_that("optim.multideme warns at the search bound and I_max moves it", {
   f2 <- suppressWarnings(optim.multideme(one, I_max = 1e3))
   expect_gt(f2$I, 500)
 })
+
+test_that("optim.multideme standard errors use the exact curvature", {
+  fit <- optim.multideme(m2)
+  x <- colSums(m2) / sum(m2)
+  for (j in 1:2) {
+    n <- m2[j, ]; pr <- n > 0
+    ll <- function(I) sum(lgamma(I * x[pr] + n[pr]) - lgamma(I * x[pr])) - lgamma(I + sum(n)) + lgamma(I)
+    h <- 1e-4 * fit$I[j]
+    d2 <- (ll(fit$I[j] + h) - 2 * ll(fit$I[j]) + ll(fit$I[j] - h)) / h^2
+    expect_equal(fit$se_I[j], 1 / sqrt(-d2), tolerance = 1e-4)
+  }
+  expect_equal(fit$se_m, fit$se_I * (fit$J - 1) / (fit$J - 1 + fit$I)^2)
+})
+
+test_that("optim.multideme likelihood-ratio intervals", {
+  fit <- optim.multideme(m2, ci = TRUE, I_max = 1e5)     # wide enough for interior limits
+  expect_named(fit, c("I", "m", "J", "k", "logl", "se_I", "se_m", "ci_I", "ci_m"))
+  x <- colSums(m2) / sum(m2)
+  for (j in 1:2) {
+    n <- m2[j, ]; pr <- n > 0
+    ll <- function(I) sum(lgamma(I * x[pr] + n[pr]) - lgamma(I * x[pr])) - lgamma(I + sum(n)) + lgamma(I)
+    expect_equal(fit$logl[j] - vapply(fit$ci_I[j, ], ll, numeric(1)),
+                 rep(stats::qchisq(0.95, 1) / 2, 2), tolerance = 1e-6, ignore_attr = TRUE)
+    expect_true(fit$ci_I[j, 1] < fit$I[j] && fit$I[j] < fit$ci_I[j, 2])
+  }
+  expect_equal(fit$ci_m, fit$ci_I / (fit$J - 1 + fit$ci_I))
+  wide <- optim.multideme(m2, ci = TRUE, I_max = 1e5, level = 0.99)
+  expect_true(all(wide$ci_I[, 1] < fit$ci_I[, 1] & wide$ci_I[, 2] > fit$ci_I[, 2]))
+  ## with the default search interval [1e-6, J], the upper limit stops at the bound
+  def <- optim.multideme(m2, ci = TRUE)
+  expect_equal(def$ci_I[, "upper"], def$J)
+  expect_error(optim.multideme(m2, ci = NA), "`ci`")
+  expect_error(optim.multideme(m2, ci = TRUE, level = 1.5), "`level`")
+})
+
+test_that("optim.multideme handles degenerate demes in the uncertainty outputs", {
+  m <- rbind(c(5, 0, 0), c(30, 10, 4), c(2, 12, 9), c(0, 3, 20))
+  fit <- optim.multideme(m, ci = TRUE)
+  expect_true(is.na(fit$se_I[1]))                       # single species: I = 0
+  expect_equal(fit$ci_I[1, "lower"], 0, ignore_attr = TRUE)
+  expect_gt(fit$ci_I[1, "upper"], 0)
+})
+
+test_that("optim.multideme reproduces the Jabot et al. (2008) estimates of TeTame 2.1", {
+  ## trial dataset of the TeTame 2.1 manual (option 'j'); TeTame's Std_I is not
+  ## reproduced: it lacks a factor (0.01 I) in its curvature
+  tt <- rbind(c(1, 8, 80, 2, 1, 20, 0), c(15, 8, 8, 20, 10, 2, 0), c(15, 81, 80, 2, 1, 2, 0))
+  fit <- optim.multideme(tt)
+  expect_equal(fit$I, c(7.4197, 5.738, 14.6712), tolerance = 1e-4)
+  expect_equal(fit$m, c(0.0626559, 0.0847088, 0.0753638), tolerance = 1e-5)
+  const <- vapply(1:3, function(j) { n <- tt[j, tt[j, ] > 0]; lfactorial(sum(n)) - sum(lfactorial(n)) },
+                  numeric(1))
+  expect_equal(-(fit$logl + const), c(15.9501, 20.1273, 15.9371), tolerance = 1e-5)
+})
+

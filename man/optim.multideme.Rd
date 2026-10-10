@@ -4,7 +4,13 @@
 \alias{optim.multideme}
 \title{Maximum likelihood estimation of local immigration rates \eqn{(m_1,...,m_K)} based on the K-deme sampling formula}
 \usage{
-optim.multideme(input_abundance_matrix, verbose = FALSE, I_max = NULL)
+optim.multideme(
+  input_abundance_matrix,
+  verbose = FALSE,
+  I_max = NULL,
+  ci = FALSE,
+  level = 0.95
+)
 }
 \arguments{
 \item{input_abundance_matrix}{a matrix \eqn{n_{ij}} of abundances (one row per
@@ -15,6 +21,11 @@ deme (local site) j, one column per species i). A data frame of counts is accept
 
 \item{I_max}{upper bound of the search interval for \code{I}: \code{NULL} (default, the
 deme size \code{J}), or a positive number, or one number per deme}
+
+\item{ci}{if \code{TRUE}, also return likelihood-ratio confidence intervals (default
+\code{FALSE})}
+
+\item{level}{confidence level of the intervals (default 0.95)}
 }
 \value{
 A list with
@@ -25,6 +36,9 @@ A list with
 \item{k}{number of classes/species, a vector of integers}
 \item{logl}{maximal log-likelihood of each deme (up to a constant that does not
 depend on \code{I}), a vector of real numbers}
+\item{se_I, se_m}{standard errors of \code{I} and \code{m}, vectors of real numbers}
+\item{ci_I, ci_m}{only if \code{ci = TRUE}: confidence intervals of \code{I} and \code{m},
+matrices with one row per deme and columns \code{lower} and \code{upper}}
 }
 }
 \description{
@@ -54,6 +68,18 @@ warning is issued; increase \code{I_max} to explore larger values.
 }
 }
 
+\section{Uncertainty}{
+
+The standard errors \code{se_I} and \code{se_m} are obtained from the exact second
+derivative of the log-likelihood in \code{I} (and the delta method for \code{m}); they are
+\code{NA} when the estimate lies on a bound of the search interval or for a deme with
+a single species. With \code{ci = TRUE}, likelihood-ratio confidence intervals are
+also returned: the range of \code{I} over which the log-likelihood stays within
+\code{qchisq(level, 1) / 2} of its maximum. A limit equal to a bound of the search
+interval means that the interval extends at least to that bound. These replace
+the \code{Std_I} and \code{Std_m} columns of the TeTame software.
+}
+
 \examples{
 input_abundances1 <- c(44, 37, 34, 5, 4, 3, 3, 2, 2, 1, 1, 1, 1)
 input_abundances2 <- c(240, 20, 48, 2, 21, 1, 3, 2, 5, 2, 0, 1, 1)
@@ -61,5 +87,5 @@ input_abundance_matrix <- rbind(input_abundances1, input_abundances2)
 optim.multideme(input_abundance_matrix)
 }
 \seealso{
-\code{\link[=optim.ewens]{optim.ewens()}}, \code{\link[=optim.pitman]{optim.pitman()}}
+\code{\link[=optim.ewens]{optim.ewens()}}, \code{\link[=optim.pitman]{optim.pitman()}}, \code{\link[=optim.etienne]{optim.etienne()}}
 }

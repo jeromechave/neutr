@@ -1,3 +1,33 @@
+# neutr 0.2.0
+
+## Etienne sampling formula
+
+* New `optim.etienne()`: maximum likelihood estimation of the fundamental biodiversity number
+  `theta` and the immigration rate `m` of Etienne's (2005) sampling formula, for a local
+  community with dispersal limitation. The likelihood surface can be multimodal: it is profiled
+  over both parameters before being refined with `stats::optim(method = "L-BFGS-B")` and the
+  exact gradient. Returns `theta`, `m`, `I`, `logl` and `converged`, and warns when an estimate
+  lies on the edge of its search interval (for `m`, the upper bound means no evidence of
+  dispersal limitation).
+* `optim.etienne()` returns standard errors (`se_theta`, `se_m`, `se_I`, from the inverse
+  Hessian), all the distinct local maxima found (`local_maxima`, as TeTame reports a second
+  maximum), and with `ci = TRUE` likelihood-ratio confidence intervals (`ci_theta`, `ci_m`,
+  `ci_I`).
+* New `logl.etienne()`: log-likelihood of Etienne's sampling formula, vectorised over `theta` and
+  `m`. It is on the same scale as the `logl` of `optim.ewens()` and `optim.pitman()`; with
+  `m = 1` it equals the Ewens log-likelihood, so the Ewens model is nested in the Etienne model.
+  `full = TRUE` gives the probability of the species abundance distribution itself.
+* `optim.multideme()` returns standard errors of `I` and `m` (`se_I`, `se_m`, from the exact
+  curvature of the likelihood) and, with `ci = TRUE`, likelihood-ratio confidence intervals
+  (`ci_I`, `ci_m`). These replace the `Std_I` and `Std_m` columns of TeTame, whose curvature
+  lacks a factor `0.01 I`.
+* With these additions, `neutr` covers the functionality of the TeTame 2.1 software (Chave and
+  Jabot): see the vignette for reading TeTame data files and plotting the likelihood surface.
+* New `logkda()`: the coefficients `K(D,A)` of the formula, computed entirely on the log scale.
+  This code comes from package `untb` (R. K. S. Hankin), where it replaces earlier
+  implementations that required PARI/GP or the packages `Brobdingnag`, `partitions` and
+  `polynom`: `neutr` gains no new dependency. Results agree with PARI/GP to about 1e-15.
+
 # neutr 0.1.1
 
 ## Estimation

@@ -1,13 +1,16 @@
 Package: neutr
 Title: Inference and Fast Generation of Neutral Species Assemblages
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: 
     person("Jerome", "Chave", , "jerome.chave@cnrs.fr", role = c("aut", "cre"))
-Description: Maximum likelihood estimation of the parameters of three neutral
-    models of species assemblages (the Ewens model, the multideme model and the
-    Pitman model), and fast, exact generation of typical species abundance
+Description: Maximum likelihood estimation of the parameters of four neutral
+    models of species assemblages (the Ewens model, the Etienne model of a local
+    community with dispersal limitation, the multideme model and the Pitman
+    model), and fast, exact generation of typical species abundance
     distributions of the Ewens and Pitman models given their parameters.
-    Calculations scale to very large samples, on the order of 10^12 individuals.
+    Calculations scale to very large samples, on the order of 10^12 individuals,
+    except for the Etienne model, whose likelihood is practical up to about 10^5
+    individuals.
 License: GPL-3
 URL: https://github.com/jeromechave/neutr
 BugReports: https://github.com/jeromechave/neutr/issues

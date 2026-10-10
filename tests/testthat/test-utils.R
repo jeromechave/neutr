@@ -41,4 +41,7 @@ test_that("input checks give informative messages naming the function", {
   expect_error(optim.ewens(numeric(0)), "optim.ewens\\(\\).*non-empty")
   expect_error(optim.ewens(c(0, 0)), "at least 1 species")
   expect_error(optim.ewens("a"), "optim.ewens\\(\\)")
+  expect_error(optim.etienne(c(1, NA, 3)), "optim.etienne\\(\\).*NA")
+  expect_error(logl.etienne(c(1.5, 2), 5, 0.5), "logl.etienne\\(\\).*whole numbers")
+  expect_error(logkda(numeric(0)), "logkda\\(\\).*non-empty")
 })
