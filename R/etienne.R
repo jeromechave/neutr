@@ -9,9 +9,9 @@
 #' @description Etienne sampling formula is an exact solution of Hubbell's model 
 #' where a single deme is connected to a single regional pool with dispersal limitation.
 #' In Hubbell’s (2001) model, a dead individual is immediately replaced by offspring of 
-#' other local individuals or by immigrants from the regional pool with probability m 
-#' (parameter 1).  The diversity of the regional pool is described `theta` (parameter 2). 
-#' Etienne sampling formula infers m and `theta` based on one sample of the deme. 
+#' other local individuals or by immigrants from the regional pool with probability \eqn{m}.
+#' The diversity of the regional pool is described  \eqn{\theta}. 
+#' Etienne sampling formula infers \eqn{m} and \eqn{\theta} based on one sample of the deme. 
 #' 
 #' `logkda()` computes the logarithm of the coefficients \eqn{K(D,A)} of
 #' Etienne's sampling formula (Etienne 2005, equation A11), for a species abundance
@@ -85,7 +85,7 @@ logkda <- function(input_abundances) {
 #' scale as the other estimators of `neutr`.
 #'
 #' @param input_abundances a vector of integers (species abundances); species with
-#'   zero abundance are ignored
+#'   zero abundance are possible but are ignored in the inference
 #' @param theta fundamental biodiversity number \eqn{\theta}, positive real values
 #' @param m immigration rate, real values in \eqn{(0, 1]}
 #' @param log_kda optional, the output of `logkda(input_abundances)`. It depends on
