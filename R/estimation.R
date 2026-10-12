@@ -16,7 +16,7 @@
 #' precision, so no general-purpose optimiser is involved.
 #'
 #' @section Boundary cases:
-#' The likelihood has no interior maximum when all individuals belong to a single
+#' The likelihood function has no interior maximum when all individuals belong to a single
 #' species (`k = 1`, the estimate is `theta = 0`) or when every species has a single
 #' individual (`k = J`, the estimate is `theta = Inf`). A warning is issued and the
 #' boundary value is returned.
@@ -25,7 +25,7 @@
 #' `logl` is the log-probability of the partition (the exchangeable partition
 #' probability function of Ewens sampling formula). Terms that depend on the data
 #' only, and not on the model, are omitted. It is on the same scale as the `logl`
-#' returned by [optim.pitman()]. The Ewens model is the Pitman model with
+#' returned by [optim.pitman()]. Note that the Ewens model is equal to the Pitman model when
 #' \eqn{\sigma = 0}, so the two models are nested and can be compared directly,
 #' for instance with the likelihood-ratio statistic
 #' \eqn{2(\mathrm{logl}_{Pitman} - \mathrm{logl}_{Ewens})} or with AIC.
@@ -269,7 +269,7 @@ optim.multideme <- function(input_abundance_matrix, verbose = FALSE, I_max = NUL
 #' can be supplied with the argument `init_vals = c(theta_init, sigma_init)`
 #' with the condition `theta_init > 0` and `0 < sigma_init < 1`.
 #'
-#' The log-likelihood is maximised with the box-constrained quasi-Newton method
+#' The log-likelihood function is maximised with the box-constrained quasi-Newton method
 #' L-BFGS-B ([stats::optim()]) using the exact gradient, on the scale
 #' \eqn{(\log\theta,\sigma)}. The optimisation is run from `init_vals` and from a
 #' second starting point derived from the Ewens estimate, and the better result is
