@@ -31,7 +31,8 @@ the black ball is picked with probability \eqn{(k\sigma+\theta)/(n+\theta)}.
 \code{generate.pitman.urn()} creates a rank-abundance distribution for given
 \eqn{\theta}, \eqn{\sigma} and \code{J}. Beta-distributed random variables are drawn from
 \eqn{Beta(1-\sigma,\theta+i\sigma)} (for the i-th stick) and the partition is the
-multinomial draw of \code{J} individuals according to the resulting GEM weights.
+multinomial draw of \code{J} individuals according to the resulting
+Griffiths-Engen-McCloskey (GEM) weights.
 
 The draw is exact: sticks are generated in blocks until every individual has been
 assigned, and the few individuals left in the far tail are drawn with the exact

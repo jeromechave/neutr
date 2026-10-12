@@ -39,7 +39,7 @@ The input should be a vector and initial values of \eqn{(\theta,\sigma)}
 can be supplied with the argument \code{init_vals = c(theta_init, sigma_init)}
 with the condition \code{theta_init > 0} and \verb{0 < sigma_init < 1}.
 
-The log-likelihood is maximised with the box-constrained quasi-Newton method
+The log-likelihood function is maximised with the box-constrained quasi-Newton method
 L-BFGS-B (\code{\link[stats:optim]{stats::optim()}}) using the exact gradient, on the scale
 \eqn{(\log\theta,\sigma)}. The optimisation is run from \code{init_vals} and from a
 second starting point derived from the Ewens estimate, and the better result is

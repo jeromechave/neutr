@@ -23,9 +23,9 @@
 #' The computing time of \eqn{K(D,A)} grows roughly as \eqn{J^2}: about 2 s for
 #' \eqn{10^4} individuals and 30 s for \eqn{4 \times 10^4} on a typical computer.
 #' Unlike the other estimators of the package, the Etienne model is therefore
-#' practical up to about \eqn{10^5} individuals. Please exert caution for large datasets.
-#' One practical recommendation for large datasets is to consider tham as 
-#' a collection of demes and to use the multi-deme model instead of the Hubell model.
+#' practical up to about \eqn{10^5} individuals. Please exercise caution for large datasets.
+#' One practical recommendation for large datasets is to consider them as 
+#' a collection of demes and to use the multi-deme model instead of the Hubbell model.
 #'
 #' @param input_abundances a vector of integers (species abundances); species with
 #'   zero abundance are ignored
@@ -133,11 +133,11 @@ logl.etienne <- function(input_abundances, theta, m, log_kda = NULL, full = FALS
 #' Maximum likelihood estimation of \eqn{\theta} and \eqn{m} based on Etienne sampling formula
 #'
 #' @description Etienne sampling formula is an exact solution of Hubbell's 
-#' (2001)  model where a single deme is connected to a single regional pool 
-#' with dispersal limitation. In Hubbell’s (2001) model, a dead individual is 
-#' immediately replaced by offspring of  other local individuals or by immigrants 
+#' (2001) model where a single deme is connected to a single regional pool 
+#' with dispersal limitation. In Hubbell's (2001) model, a dead individual is 
+#' immediately replaced by offspring of other local individuals or by immigrants 
 #' from the regional pool with probability \eqn{m}. The diversity of the regional 
-#' pool is described  \eqn{\theta}. Etienne sampling formula infers \eqn{m} and 
+#' pool is described by \eqn{\theta}. Etienne sampling formula infers \eqn{m} and 
 #' \eqn{\theta} based on one sample of the deme. If there is no dispersal 
 #' limitation, the sample can be considered as representative of the regional 
 #' pool, corresponding to the limiting case \eqn{m=1}, where the Etienne sampling 
@@ -210,9 +210,9 @@ logl.etienne <- function(input_abundances, theta, m, log_kda = NULL, full = FALS
 #' The computing time of \eqn{K(D,A)} grows roughly as \eqn{J^2}: about 2 s for
 #' \eqn{10^4} individuals and 30 s for \eqn{4 \times 10^4} on a typical computer.
 #' Unlike the other estimators of the package, the Etienne model is therefore
-#' practical up to about \eqn{10^5} individuals. Please exert caution for large datasets.
-#' One practical recommendation for large datasets is to consider tham as 
-#' a collection of demes and to use the multi-deme model instead of the Hubell model.
+#' practical up to about \eqn{10^5} individuals. Please exercise caution for large datasets.
+#' One practical recommendation for large datasets is to consider them as 
+#' a collection of demes and to use the multi-deme model instead of the Hubbell model.
 #'
 #' @param input_abundances a vector of integers (species abundances); species with
 #'   zero abundance are ignored

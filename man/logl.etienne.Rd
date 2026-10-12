@@ -8,7 +8,7 @@ logl.etienne(input_abundances, theta, m, log_kda = NULL, full = FALSE)
 }
 \arguments{
 \item{input_abundances}{a vector of integers (species abundances); species with
-zero abundance are ignored}
+zero abundance are possible but are ignored in the inference}
 
 \item{theta}{fundamental biodiversity number \eqn{\theta}, positive real values}
 
@@ -56,7 +56,7 @@ This function is adapted from the \code{etienne()} function of package \code{unt
 Robin K. S. Hankin (Hankin 2007). The present version computes the coefficients
 \eqn{K(D,A)} on the log scale in pure R (no PARI/GP), evaluates the likelihood
 without loss of precision when \eqn{m} is close to 1, and puts it on the same
-scale as the other estimators of \code{neutr}.
+scale as the Ewens likelihood (i.e., \code{logl.etienne} is comparable with \code{logl.ewens}).
 }
 
 \examples{

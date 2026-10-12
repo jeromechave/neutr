@@ -33,7 +33,9 @@ scale, so that the calculation cannot overflow whatever the sample size.
 The computing time of \eqn{K(D,A)} grows roughly as \eqn{J^2}: about 2 s for
 \eqn{10^4} individuals and 30 s for \eqn{4 \times 10^4} on a typical computer.
 Unlike the other estimators of the package, the Etienne model is therefore
-practical up to about \eqn{10^5} individuals.
+practical up to about \eqn{10^5} individuals. Please exercise caution for large datasets.
+One practical recommendation for large datasets is to consider them as
+a collection of demes and to use the multi-deme model instead of the Hubbell model.
 }
 
 \examples{

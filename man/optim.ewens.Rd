@@ -33,7 +33,7 @@ precision, so no general-purpose optimiser is involved.
 }
 \section{Boundary cases}{
 
-The likelihood has no interior maximum when all individuals belong to a single
+The likelihood function has no interior maximum when all individuals belong to a single
 species (\code{k = 1}, the estimate is \code{theta = 0}) or when every species has a single
 individual (\code{k = J}, the estimate is \code{theta = Inf}). A warning is issued and the
 boundary value is returned.
@@ -44,7 +44,7 @@ boundary value is returned.
 \code{logl} is the log-probability of the partition (the exchangeable partition
 probability function of Ewens sampling formula). Terms that depend on the data
 only, and not on the model, are omitted. It is on the same scale as the \code{logl}
-returned by \code{\link[=optim.pitman]{optim.pitman()}}. The Ewens model is the Pitman model with
+returned by \code{\link[=optim.pitman]{optim.pitman()}}. Note that the Ewens model is equal to the Pitman model when
 \eqn{\sigma = 0}, so the two models are nested and can be compared directly,
 for instance with the likelihood-ratio statistic
 \eqn{2(\mathrm{logl}_{Pitman} - \mathrm{logl}_{Ewens})} or with AIC.
