@@ -2,10 +2,18 @@
 #
 # Adapted, with improvements, from the etienne() and logkda() functions of package
 # untb by Robin K. S. Hankin (Hankin 2007, Journal of Statistical Software 22(12)).
+# Theory first published by Rampal Etienne (Etienne 2005). 
 
 #' Etienne's coefficients \eqn{K(D,A)} of the sampling formula with dispersal limitation
 #'
-#' @description `logkda()` computes the logarithm of the coefficients \eqn{K(D,A)} of
+#' @description Etienne sampling formula is an exact solution of Hubbell's model 
+#' where a single deme is connected to a single regional pool with dispersal limitation.
+#' In Hubbell’s (2001) model, a dead individual is immediately replaced by offspring of 
+#' other local individuals or by immigrants from the regional pool with probability m 
+#' (parameter 1).  The diversity of the regional pool is described `theta` (parameter 2). 
+#' Etienne sampling formula infers m and `theta` based on one sample of the deme. 
+#' 
+#' `logkda()` computes the logarithm of the coefficients \eqn{K(D,A)} of
 #' Etienne's sampling formula (Etienne 2005, equation A11), for a species abundance
 #' distribution \eqn{D = (n_1, ..., n_k)} and all \eqn{A} from k to \eqn{J=\sum n_i}.
 #' These coefficients depend on the data only, not on the parameters, and are the
@@ -22,7 +30,9 @@
 #' The computing time of \eqn{K(D,A)} grows roughly as \eqn{J^2}: about 2 s for
 #' \eqn{10^4} individuals and 30 s for \eqn{4 \times 10^4} on a typical computer.
 #' Unlike the other estimators of the package, the Etienne model is therefore
-#' practical up to about \eqn{10^5} individuals.
+#' practical up to about \eqn{10^5} individuals. Please exert caution for large datasets.
+#' One practical recommendation for large datasets is to consider tham as 
+#' a collection of demes and to use the multi-deme model instead of the Hubell model.
 #'
 #' @param input_abundances a vector of integers (species abundances); species with
 #'   zero abundance are ignored
