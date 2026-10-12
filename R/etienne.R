@@ -6,14 +6,7 @@
 
 #' Etienne's coefficients \eqn{K(D,A)} of the sampling formula with dispersal limitation
 #'
-#' @description Etienne sampling formula is an exact solution of Hubbell's model 
-#' where a single deme is connected to a single regional pool with dispersal limitation.
-#' In Hubbell’s (2001) model, a dead individual is immediately replaced by offspring of 
-#' other local individuals or by immigrants from the regional pool with probability \eqn{m}.
-#' The diversity of the regional pool is described  \eqn{\theta}. 
-#' Etienne sampling formula infers \eqn{m} and \eqn{\theta} based on one sample of the deme. 
-#' 
-#' `logkda()` computes the logarithm of the coefficients \eqn{K(D,A)} of
+#' @description `logkda()` computes the logarithm of the coefficients \eqn{K(D,A)} of
 #' Etienne's sampling formula (Etienne 2005, equation A11), for a species abundance
 #' distribution \eqn{D = (n_1, ..., n_k)} and all \eqn{A} from k to \eqn{J=\sum n_i}.
 #' These coefficients depend on the data only, not on the parameters, and are the
@@ -55,7 +48,18 @@ logkda <- function(input_abundances) {
 
 #' Log-likelihood of Etienne's sampling formula
 #'
-#' @description `logl.etienne()` computes the log-likelihood of Etienne's sampling
+#' @description Etienne sampling formula is an exact solution of Hubbell's 
+#' (2001)  model where a single deme is connected to a single regional pool 
+#' with dispersal limitation. In Hubbell’s (2001) model, a dead individual is 
+#' immediately replaced by offspring of  other local individuals or by immigrants 
+#' from the regional pool with probability \eqn{m}. The diversity of the regional 
+#' pool is described  \eqn{\theta}. Etienne sampling formula infers \eqn{m} and 
+#' \eqn{\theta} based on one sample of the deme. If there is no dispersal 
+#' limitation, the sample can be considered as representative of the regional 
+#' pool, corresponding to the limiting case \eqn{m=1}, where the Etienne sampling 
+#' formula becomes equivalent to the Ewens sampling formula. 
+#' 
+#' `logl.etienne()` computes the log-likelihood of Etienne's sampling
 #' formula for a species abundance distribution \eqn{(n_1, ..., n_k)}, given the
 #' fundamental biodiversity number \eqn{\theta} of the metacommunity and the
 #' immigration rate \eqn{m} into the local community. With the rescaled immigration
@@ -82,7 +86,7 @@ logkda <- function(input_abundances) {
 #' Robin K. S. Hankin (Hankin 2007). The present version computes the coefficients
 #' \eqn{K(D,A)} on the log scale in pure R (no PARI/GP), evaluates the likelihood
 #' without loss of precision when \eqn{m} is close to 1, and puts it on the same
-#' scale as the other estimators of `neutr`.
+#' scale as the Ewens likelihood (i.e., `logl.etienne` is comparable with `logl.ewens`).
 #'
 #' @param input_abundances a vector of integers (species abundances); species with
 #'   zero abundance are possible but are ignored in the inference
