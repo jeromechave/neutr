@@ -2,7 +2,7 @@
 
 #' General use function
 #'
-#' @description `zeroremove()` is used to remove zeros and NAs in a vector of
+#' @description `remove_zero()` is used to remove zeros and NAs in a vector of
 #' reals or of integers. This is a simple utility function.
 #'
 #' @param x vector of real
@@ -11,8 +11,8 @@
 #' @export
 #'
 #' @examples
-#' zeroremove(c(2.1, 0.0, 3.0, NA))
-zeroremove <- function(x) x[!is.na(x) & x != 0]
+#' remove_zero(c(2.1, 0.0, 3.0, NA))
+remove_zero <- function(x) x[!is.na(x) & x != 0]
 
 # Internal helpers -------------------------------------------------------------
 

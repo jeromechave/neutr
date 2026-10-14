@@ -3,3 +3,6 @@
 ^\.github$
 ^.*\.Rcheck$
 ^neutr_.*\.tar\.gz$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

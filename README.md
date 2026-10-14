@@ -3,6 +3,8 @@
 ### Jerome Chave
 jerome.chave@cnrs.fr
 
+Documentation website: <https://jeromechave.github.io/neutr/>
+
 ## History
 
 - **First release**: May 2024
@@ -80,7 +82,7 @@ See `vignette("Using-the-neutr-package")` for a longer tour.
 | Pitman community via the GEM representation (any sample size) | `generate_pitman_urn()` |
 | Expected number of species | `kest()` |
 | Expected number of species above an abundance threshold | `kest_gt()` (integral), `kest_gt0()` (simulation) |
-| Drop zeros and `NA`s | `zeroremove()` |
+| Drop zeros and `NA`s | `remove_zero()` |
 
 ## Good to know
 

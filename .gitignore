@@ -4,3 +4,4 @@
 inst/doc
 *.Rcheck
 neutr_*.tar.gz
+docs

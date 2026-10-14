@@ -8,10 +8,17 @@
   `logl_etienne()`, `generate_hoppe_urn()`, `generate_hoppe_urn0()`,
   `generate_pitman_urn()`, `kest_gt()` and `kest_gt0()`. Error and warning
   messages use the new names.
-* The old dotted names (`optim.ewens()`, `logl.etienne()`, `kest.gt()`, ...)
-  still work, with the same arguments and results, but are soft-deprecated with
-  `lifecycle::deprecate_soft()` and will be removed in a future release. See
-  `?neutr-deprecated` for the correspondence. neutr now imports lifecycle.
+* `zeroremove()` is renamed `remove_zero()`.
+* The old names (`optim.ewens()`, `logl.etienne()`, `kest.gt()`,
+  `zeroremove()`, ...) still work, with the same arguments and results, but are
+  soft-deprecated with `lifecycle::deprecate_soft()` and will be removed in a
+  future release. See `?neutr-deprecated` for the correspondence. neutr now
+  imports lifecycle.
+
+## Documentation
+
+* New pkgdown website, <https://jeromechave.github.io/neutr/>, built and
+  deployed to GitHub Pages by a GitHub Actions workflow.
 
 ## Code style
 

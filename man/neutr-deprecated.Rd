@@ -12,6 +12,7 @@
 \alias{optim.ewens}
 \alias{optim.multideme}
 \alias{optim.pitman}
+\alias{zeroremove}
 \title{Deprecated functions in neutr}
 \usage{
 generate.hoppe.urn(theta, J)
@@ -51,11 +52,13 @@ optim.pitman(
   lower = c(1e-06, 1e-08),
   upper = NULL
 )
+
+zeroremove(x)
 }
 \arguments{
 \item{theta, sigma, J, seed, N, nrep, input_abundances, input_abundance_matrix}{See the documentation of the replacement function.}
 
-\item{m, log_kda, full, init_vals, lower, upper, ci, level, verbose, I_max}{See the documentation of the replacement function.}
+\item{m, log_kda, full, init_vals, lower, upper, ci, level, verbose, I_max, x}{See the documentation of the replacement function.}
 }
 \value{
 See the documentation of the replacement function.
@@ -75,6 +78,7 @@ future release. Please use the new names instead:\tabular{ll}{
    \code{optim.ewens()} \tab \code{\link[=optim_ewens]{optim_ewens()}} \cr
    \code{optim.multideme()} \tab \code{\link[=optim_multideme]{optim_multideme()}} \cr
    \code{optim.pitman()} \tab \code{\link[=optim_pitman]{optim_pitman()}} \cr
+   \code{zeroremove()} \tab \code{\link[=remove_zero]{remove_zero()}} \cr
 }
 
 

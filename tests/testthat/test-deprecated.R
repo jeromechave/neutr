@@ -48,3 +48,9 @@ test_that("deprecated richness functions match their replacements", {
   set.seed(1)
   expect_identical(old, kest_gt0(5, 1000, 10, nrep = 5))
 })
+
+test_that("deprecated utility functions match their replacements", {
+  x <- c(2.1, 0, 3, NA)
+  lifecycle::expect_deprecated(old <- zeroremove(x))
+  expect_identical(old, remove_zero(x))
+})

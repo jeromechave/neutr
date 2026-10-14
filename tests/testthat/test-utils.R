@@ -1,10 +1,10 @@
-test_that("zeroremove drops zeros and missing values", {
-  expect_equal(zeroremove(c(2.1, 0.0, 3.0)), c(2.1, 3.0))
-  expect_equal(zeroremove(c(NA, 0, 1, NA, 2)), c(1, 2))
-  expect_equal(zeroremove(c(NaN, 5)), 5)
-  expect_equal(zeroremove(c(0, 0)), numeric(0))
-  expect_equal(zeroremove(c(-1, 0, 1)), c(-1, 1))
-  expect_identical(zeroremove(integer(0)), integer(0))
+test_that("remove_zero drops zeros and missing values", {
+  expect_equal(remove_zero(c(2.1, 0.0, 3.0)), c(2.1, 3.0))
+  expect_equal(remove_zero(c(NA, 0, 1, NA, 2)), c(1, 2))
+  expect_equal(remove_zero(c(NaN, 5)), 5)
+  expect_equal(remove_zero(c(0, 0)), numeric(0))
+  expect_equal(remove_zero(c(-1, 0, 1)), c(-1, 1))
+  expect_identical(remove_zero(integer(0)), integer(0))
 })
 
 test_that("rmultinom_big preserves the total beyond .Machine$integer.max", {

@@ -25,6 +25,7 @@
 #' | `optim.ewens()`           | [optim_ewens()]           |
 #' | `optim.multideme()`       | [optim_multideme()]       |
 #' | `optim.pitman()`          | [optim_pitman()]          |
+#' | `zeroremove()`            | [remove_zero()]           |
 #'
 #' The deprecated functions take the same arguments and return the same
 #' values as their replacements. They signal a soft deprecation warning
@@ -34,7 +35,7 @@
 #'
 #' @param theta,sigma,J,seed,N,nrep,input_abundances,input_abundance_matrix
 #'   See the documentation of the replacement function.
-#' @param m,log_kda,full,init_vals,lower,upper,ci,level,verbose,I_max
+#' @param m,log_kda,full,init_vals,lower,upper,ci,level,verbose,I_max,x
 #'   See the documentation of the replacement function.
 #' @return See the documentation of the replacement function.
 #' @name neutr-deprecated
@@ -134,4 +135,11 @@ optim.pitman <- function(input_abundances, init_vals = c(10, 0.1),
     input_abundances = input_abundances, init_vals = init_vals,
     lower = lower, upper = upper
   )
+}
+
+#' @rdname neutr-deprecated
+#' @export
+zeroremove <- function(x) {
+  lifecycle::deprecate_soft("0.2.1", "zeroremove()", "remove_zero()")
+  remove_zero(x = x)
 }

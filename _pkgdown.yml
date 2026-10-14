@@ -1,0 +1,46 @@
+url: https://jeromechave.github.io/neutr/
+
+template:
+  bootstrap: 5
+
+home:
+  title: "neutr: Inference and Fast Generation of Neutral Species Assemblages"
+
+reference:
+  - title: Parameter estimation
+    desc: >
+      Maximum likelihood estimation of the parameters of the four neutral
+      models. The `logl` values of `optim_ewens()`, `optim_pitman()` and
+      `optim_etienne()` are on the same scale, so nested models can be
+      compared directly.
+    contents:
+      - optim_ewens
+      - optim_pitman
+      - optim_etienne
+      - optim_multideme
+  - title: Etienne sampling formula
+    desc: Likelihood of Etienne's sampling formula and its coefficients.
+    contents:
+      - logl_etienne
+      - logkda
+  - title: Generation of species abundance distributions
+    desc: Exact simulation of the Ewens and Pitman models.
+    contents:
+      - starts_with("generate_")
+  - title: Number of species
+    desc: Expected number of species, overall or above an abundance threshold.
+    contents:
+      - starts_with("kest")
+  - title: Utilities
+    contents:
+      - remove_zero
+  - title: Deprecated functions
+    desc: Dotted names replaced by snake_case names in neutr 0.2.1.
+    contents:
+      - neutr-deprecated
+
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+      - Using-the-neutr-package
