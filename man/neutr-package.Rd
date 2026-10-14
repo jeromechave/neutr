@@ -6,38 +6,38 @@
 \alias{neutr-package}
 \title{neutr: Inference and Fast Generation of Neutral Species Assemblages}
 \description{
-Parameter inference and fast generation for neutral species assemblage models:
-the Ewens model, the Etienne model (a local community with dispersal
+Parameter inference and fast generation for neutral species assemblage
+models: the Ewens model, the Etienne model (a local community with dispersal
 limitation), the multideme model and the Pitman model.
 }
 \section{Estimation}{
 
-Parameters are estimated by maximising the likelihood: \code{\link[=optim.ewens]{optim.ewens()}} for the
-Ewens model, \code{\link[=optim.etienne]{optim.etienne()}} for the Etienne model, \code{\link[=optim.pitman]{optim.pitman()}} for the
-Pitman model and \code{\link[=optim.multideme]{optim.multideme()}} for the multideme model. The Ewens model is
-nested in both the Etienne model (\eqn{m = 1}) and the Pitman model
-(\eqn{\sigma = 0}), and the three functions return their log-likelihood on the
-same scale.
+Parameters are estimated by maximising the likelihood: \code{\link[=optim_ewens]{optim_ewens()}} for
+the Ewens model, \code{\link[=optim_etienne]{optim_etienne()}} for the Etienne model, \code{\link[=optim_pitman]{optim_pitman()}}
+for the Pitman model and \code{\link[=optim_multideme]{optim_multideme()}} for the multideme model. The
+Ewens model is nested in both the Etienne model (\eqn{m = 1}) and the Pitman
+model (\eqn{\sigma = 0}), and the three functions return their log-likelihood
+on the same scale.
 }
 
 \section{Etienne sampling formula}{
 
-\code{\link[=logl.etienne]{logl.etienne()}} evaluates the likelihood of Etienne's sampling formula and
+\code{\link[=logl_etienne]{logl_etienne()}} evaluates the likelihood of Etienne's sampling formula and
 \code{\link[=logkda]{logkda()}} its coefficients \eqn{K(D,A)}, computed on the log scale so that
 large samples cannot overflow.
 }
 
 \section{Generation}{
 
-\code{\link[=generate.hoppe.urn0]{generate.hoppe.urn0()}} simulates Hoppe's urn exactly, individual by individual;
-\code{\link[=generate.hoppe.urn]{generate.hoppe.urn()}} and \code{\link[=generate.pitman.urn]{generate.pitman.urn()}} use the
+\code{\link[=generate_hoppe_urn0]{generate_hoppe_urn0()}} simulates Hoppe's urn exactly, individual by
+individual; \code{\link[=generate_hoppe_urn]{generate_hoppe_urn()}} and \code{\link[=generate_pitman_urn]{generate_pitman_urn()}} use the
 Griffiths-Engen-McCloskey representation, whose cost does not depend on the
 sample size, and scale to 10^12 individuals and beyond.
 }
 
 \section{Expected richness}{
 
-\code{\link[=kest]{kest()}}, \code{\link[=kest.gt]{kest.gt()}} and \code{\link[=kest.gt0]{kest.gt0()}} give the expected number of species
+\code{\link[=kest]{kest()}}, \code{\link[=kest_gt]{kest_gt()}} and \code{\link[=kest_gt0]{kest_gt0()}} give the expected number of species
 (possibly above an abundance threshold).
 }
 

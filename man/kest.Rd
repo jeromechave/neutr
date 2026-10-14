@@ -2,7 +2,8 @@
 % Please edit documentation in R/richness.R
 \name{kest}
 \alias{kest}
-\title{Expected number of classes given parameter \eqn{\theta} and sample size J for the Hoppe urn model}
+\title{Expected number of classes given parameter \eqn{\theta} and sample size J for
+the Hoppe urn model}
 \usage{
 kest(theta, J)
 }
@@ -15,9 +16,10 @@ kest(theta, J)
 the expected number of classes (species), a real number
 }
 \description{
-The expected number of species is computed using an exact expression
-based on the digamma function, \eqn{\theta[\psi(\theta+J)-\psi(\theta)]}.
-The function is vectorised over \code{theta} and \code{J}.
+The expected number of species is computed using an exact
+expression based on the digamma function,
+\eqn{\theta[\psi(\theta+J)-\psi(\theta)]}. The function is vectorised over
+\code{theta} and \code{J}.
 }
 \examples{
 kest(11.3, 234373)

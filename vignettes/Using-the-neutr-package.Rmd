@@ -23,12 +23,12 @@ library(neutr)
 The `neutr` package does two things for neutral models of species assemblages:
 
 * **inference**: maximum likelihood estimation of the parameters of the Ewens
-  model (`optim.ewens()`), the Etienne model of a local community with dispersal
-  limitation (`optim.etienne()`), the Pitman model (`optim.pitman()`) and the
-  multideme model (`optim.multideme()`);
+  model (`optim_ewens()`), the Etienne model of a local community with dispersal
+  limitation (`optim_etienne()`), the Pitman model (`optim_pitman()`) and the
+  multideme model (`optim_multideme()`);
 * **generation**: fast and exact simulation of typical species abundance
-  distributions of the Ewens model (`generate.hoppe.urn0()`,
-  `generate.hoppe.urn()`) and of the Pitman model (`generate.pitman.urn()`),
+  distributions of the Ewens model (`generate_hoppe_urn0()`,
+  `generate_hoppe_urn()`) and of the Pitman model (`generate_pitman_urn()`),
   including for samples of $10^{12}$ individuals and more.
 
 A species abundance distribution is a vector of positive counts
@@ -37,12 +37,12 @@ $(n_1, \dots, n_k)$: $k$ species, $J = \sum_i n_i$ individuals.
 ## Generating a community
 
 Ewens' model has a single parameter $\theta$ (the fundamental biodiversity
-number). `generate.hoppe.urn()` returns the abundances, sorted in decreasing
+number). `generate_hoppe_urn()` returns the abundances, sorted in decreasing
 order, together with the *expected* number of species for these parameters:
 
 ```{r generate}
 set.seed(42)
-com <- generate.hoppe.urn(theta = 11.3, J = 234373)
+com <- generate_hoppe_urn(theta = 11.3, J = 234373)
 length(com$abundance)   # species in this draw
 com$k                   # expected number of species
 head(com$abundance)
@@ -57,19 +57,19 @@ The generator works with the Griffiths-Engen-McCloskey representation of the
 model, so its cost hardly depends on the number of individuals:
 
 ```{r huge}
-huge <- generate.hoppe.urn(theta = 100, J = 1e12)
+huge <- generate_hoppe_urn(theta = 100, J = 1e12)
 length(huge$abundance)
 sum(huge$abundance) == 1e12
 ```
 
-`generate.hoppe.urn0()` simulates Hoppe's urn exactly, individual by individual
+`generate_hoppe_urn0()` simulates Hoppe's urn exactly, individual by individual
 (vectorised, so still fast for samples of millions). It is mostly useful as a
 reference. It draws random numbers with the `dqrng` package, which has its own
 random stream: **`set.seed()` does not affect it**, use its `seed` argument:
 
 ```{r urn0}
-a <- generate.hoppe.urn0(theta = 11.3, J = 1e5, seed = 1)
-b <- generate.hoppe.urn0(theta = 11.3, J = 1e5, seed = 1)
+a <- generate_hoppe_urn0(theta = 11.3, J = 1e5, seed = 1)
+b <- generate_hoppe_urn0(theta = 11.3, J = 1e5, seed = 1)
 identical(a, b)
 ```
 
@@ -78,25 +78,25 @@ heavier tails (more rare species) than Ewens' model:
 
 ```{r pitman-gen}
 set.seed(1)
-pit <- generate.pitman.urn(theta = 10, sigma = 0.3, J = 1e5)
+pit <- generate_pitman_urn(theta = 10, sigma = 0.3, J = 1e5)
 c(species = length(pit$abundance), expected = round(pit$k, 1))
 ```
 
 ## Estimating the parameters
 
-`optim.ewens()` gives the maximum likelihood estimate of $\theta$, which solves
+`optim_ewens()` gives the maximum likelihood estimate of $\theta$, which solves
 $k = \theta[\psi(\theta + J) - \psi(\theta)]$:
 
 ```{r ewens}
 ab <- c(234, 87, 34, 5, 4, 3, 3, 2, 2, 1, 1, 1, 1)
-ew <- optim.ewens(ab)
+ew <- optim_ewens(ab)
 ew
 ```
 
-`optim.pitman()` estimates $(\theta, \sigma)$:
+`optim_pitman()` estimates $(\theta, \sigma)$:
 
 ```{r pitman}
-pm <- optim.pitman(ab, init_vals = c(10, 0.1))
+pm <- optim_pitman(ab, init_vals = c(10, 0.1))
 pm
 ```
 
@@ -104,7 +104,7 @@ pm
 
 The Ewens model is the Pitman model with $\sigma = 0$, so the two are nested and
 can be compared with a likelihood-ratio test or AIC. The `logl` element returned
-by `optim.ewens()` and `optim.pitman()` is on the same scale for both functions:
+by `optim_ewens()` and `optim_pitman()` is on the same scale for both functions:
 
 ```{r lrt}
 lrt <- 2 * (pm$logl - ew$logl)
@@ -119,8 +119,8 @@ p-value is conservative; halve it for the usual boundary correction.)
 
 ```{r recover}
 set.seed(2024)
-sim <- generate.pitman.urn(theta = 10, sigma = 0.3, J = 1e5)$abundance
-fit <- optim.pitman(sim)
+sim <- generate_pitman_urn(theta = 10, sigma = 0.3, J = 1e5)$abundance
+fit <- optim_pitman(sim)
 round(c(theta = fit$theta, sigma = fit$sigma), 3)   # truth: 10 and 0.3
 ```
 
@@ -130,19 +130,19 @@ When the likelihood has no interior maximum for the data at hand, the estimate
 lands on the edge of the search interval and the functions issue a warning:
 
 ```{r boundary}
-tryCatch(optim.ewens(rep(1, 20)), warning = function(w) conditionMessage(w))
+tryCatch(optim_ewens(rep(1, 20)), warning = function(w) conditionMessage(w))
 ```
 
 ## A local community with dispersal limitation: the Etienne model
 
 In Etienne's (2005) model, a local community of `J` individuals receives immigrants
 from a neutral metacommunity with fundamental biodiversity number $\theta$, at rate
-$m$. `optim.etienne()` estimates $(\theta, m)$ from a single sample; on the example
+$m$. `optim_etienne()` estimates $(\theta, m)$ from a single sample; on the example
 of Etienne's paper it reproduces his estimates $\theta = 7.05$ and $m = 0.226$:
 
 ```{r etienne}
 zoo <- c(8, 5, 3, 2, 1, 1)
-et <- optim.etienne(zoo)
+et <- optim_etienne(zoo)
 et
 ```
 
@@ -150,7 +150,7 @@ The model with $m = 1$ (no dispersal limitation) is the Ewens model, and the `lo
 values of the two functions are on the same scale:
 
 ```{r etienne-lrt}
-ew_zoo <- optim.ewens(zoo)
+ew_zoo <- optim_ewens(zoo)
 lrt <- 2 * (et$logl - ew_zoo$logl)
 c(LRT = lrt, p.value = pchisq(lrt, df = 1, lower.tail = FALSE))
 ```
@@ -161,12 +161,12 @@ the estimate of $m$ reaches its upper bound, with a warning, and the Etienne mod
 reduces to the Ewens model; this is the case for the sample `ab` used above:
 
 ```{r etienne-boundary}
-suppressWarnings(optim.etienne(ab))[c("theta", "m", "logl")]
-ew_ab <- optim.ewens(ab)
+suppressWarnings(optim_etienne(ab))[c("theta", "m", "logl")]
+ew_ab <- optim_ewens(ab)
 ew_ab
 ```
 
-The likelihood itself is given by `logl.etienne()`. It depends on the data through
+The likelihood itself is given by `logl_etienne()`. It depends on the data through
 the coefficients $K(D,A)$, which are the expensive part of the calculation (their
 cost grows as $J^2$): compute them once with `logkda()` to evaluate the likelihood
 many times, for instance along a profile:
@@ -174,20 +174,20 @@ many times, for instance along a profile:
 ```{r etienne-profile, fig.cap = "Profile of the log-likelihood in m, at the estimated theta."}
 lk <- logkda(zoo)
 m <- seq(0.02, 1, by = 0.01)
-plot(m, logl.etienne(zoo, et$theta, m, log_kda = lk), type = "l",
+plot(m, logl_etienne(zoo, et$theta, m, log_kda = lk), type = "l",
      xlab = "immigration rate m", ylab = "log-likelihood")
 abline(v = et$m, lty = 2)
 ```
 
 ### Uncertainty and local maxima
 
-`optim.etienne()` returns standard errors (`se_theta`, `se_m`, `se_I`) from the
+`optim_etienne()` returns standard errors (`se_theta`, `se_m`, `se_I`) from the
 inverse Hessian, and with `ci = TRUE` likelihood-ratio confidence intervals, which
 are preferable because the likelihood is often strongly asymmetric. A limit equal to
 a bound of the search interval means that the interval extends at least that far:
 
 ```{r etienne-ci}
-fit <- optim.etienne(zoo, ci = TRUE)
+fit <- optim_etienne(zoo, ci = TRUE)
 rbind(theta = c(estimate = fit$theta, se = fit$se_theta, fit$ci_theta),
       m     = c(estimate = fit$m,     se = fit$se_m,     fit$ci_m))
 ```
@@ -196,7 +196,7 @@ The likelihood surface can have several local maxima; all those found are listed
 `local_maxima`, the global one first:
 
 ```{r etienne-local}
-optim.etienne(c(15, 81, 80, 2, 1, 2))$local_maxima
+optim_etienne(c(15, 81, 80, 2, 1, 2))$local_maxima
 ```
 
 ### Data files of the TeTame software
@@ -215,36 +215,36 @@ samples <- unname(split(as.numeric(x[x != "&"]), cumsum(x == "&")[x != "&"]))
 ```
 
 TeTame's option `e` estimates $(\theta, m)$ in each sample. TeTame reports the
-negative log-probability of the abundance vector, which is `-logl.etienne(..., full = TRUE)`:
+negative log-probability of the abundance vector, which is `-logl_etienne(..., full = TRUE)`:
 
 ```{r tetame-e}
 do.call(rbind, lapply(samples, function(y) {
-  fit <- suppressWarnings(optim.etienne(y))
+  fit <- suppressWarnings(optim_etienne(y))
   data.frame(S = length(y[y > 0]), J = sum(y), theta = fit$theta, se_theta = fit$se_theta,
              m = fit$m, se_m = fit$se_m,
-             negloglik = -logl.etienne(y, fit$theta, fit$m, full = TRUE),
+             negloglik = -logl_etienne(y, fit$theta, fit$m, full = TRUE),
              n_local_maxima = nrow(fit$local_maxima))
 }))
 ```
 
 TeTame's option `j` (Jabot et al. 2008) estimates $m$ in each sample, the regional
-pool being the sum of the samples: this is `optim.multideme()`, with one row per
+pool being the sum of the samples: this is `optim_multideme()`, with one row per
 sample (the species must be in the same order in every sample):
 
 ```{r tetame-j}
-optim.multideme(do.call(rbind, samples), ci = TRUE)[c("I", "se_I", "m", "se_m", "ci_m")]
+optim_multideme(do.call(rbind, samples), ci = TRUE)[c("I", "se_I", "m", "se_m", "ci_m")]
 ```
 
-The likelihood surface is computed on a grid with `logl.etienne()`, which is
+The likelihood surface is computed on a grid with `logl_etienne()`, which is
 vectorised; the contour delimits the joint 95% confidence region:
 
 ```{r tetame-surface, fig.cap = "Log-likelihood surface of the second sample of the TeTame trial file; the contour delimits the joint 95% confidence region and the point is the maximum likelihood estimate."}
 y <- samples[[2]]
-fit <- optim.etienne(y)
+fit <- optim_etienne(y)
 lk <- logkda(y)                                  # computed once for the whole grid
 grid <- expand.grid(theta = exp(seq(log(0.5), log(200), length.out = 80)),
                     m = seq(0.005, 1, length.out = 80))
-grid$logl <- logl.etienne(y, grid$theta, grid$m, log_kda = lk)
+grid$logl <- logl_etienne(y, grid$theta, grid$m, log_kda = lk)
 z <- matrix(grid$logl - fit$logl, 80, 80)
 image(log(unique(grid$theta)), unique(grid$m), pmax(z, -10), col = hcl.colors(50),
       xlab = "log(theta)", ylab = "m")
@@ -255,7 +255,7 @@ points(log(fit$theta), fit$m, pch = 19)
 
 ## The multideme model
 
-`optim.multideme()` takes a matrix with **one row per deme (local community) and
+`optim_multideme()` takes a matrix with **one row per deme (local community) and
 one column per species**. The regional abundance distribution is the sum of the
 rows. For each deme it estimates the rescaled immigration rate
 $I = \frac{m}{1 - m}(J - 1)$ and the immigration rate $m$:
@@ -265,7 +265,7 @@ demes <- rbind(
   c(44, 37, 34, 5, 4, 3, 3, 2, 2, 1, 1, 1, 1),
   c(240, 20, 48, 2, 21, 1, 3, 2, 5, 2, 0, 1, 1)
 )
-optim.multideme(demes)
+optim_multideme(demes)
 ```
 
 Use `verbose = TRUE` to follow the progress over many demes.
@@ -273,13 +273,13 @@ Use `verbose = TRUE` to follow the progress over many demes.
 ## Expected number of species
 
 `kest()` is the exact expected number of species in the Ewens model.
-`kest.gt()` and `kest.gt0()` give the expected number of species with more than
+`kest_gt()` and `kest_gt0()` give the expected number of species with more than
 `N` individuals, deterministically (an approximation, via an integral) and by
 simulation:
 
 ```{r richness}
 kest(11.3, 234373)
-kest.gt(11.3, 234373, N = 50)$value
+kest_gt(11.3, 234373, N = 50)$value
 set.seed(3)
-kest.gt0(11.3, 234373, N = 50, nrep = 50)
+kest_gt0(11.3, 234373, N = 50, nrep = 50)
 ```

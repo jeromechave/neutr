@@ -1,3 +1,27 @@
+# neutr 0.2.1
+
+## Renamed functions
+
+* The exported functions now use snake_case names, following the tidyverse
+  style guide (dots in function names are reserved for S3 methods):
+  `optim_ewens()`, `optim_pitman()`, `optim_multideme()`, `optim_etienne()`,
+  `logl_etienne()`, `generate_hoppe_urn()`, `generate_hoppe_urn0()`,
+  `generate_pitman_urn()`, `kest_gt()` and `kest_gt0()`. Error and warning
+  messages use the new names.
+* The old dotted names (`optim.ewens()`, `logl.etienne()`, `kest.gt()`, ...)
+  still work, with the same arguments and results, but are soft-deprecated with
+  `lifecycle::deprecate_soft()` and will be removed in a future release. See
+  `?neutr-deprecated` for the correspondence. neutr now imports lifecycle.
+
+## Code style
+
+* The R code follows the tidyverse style guide (formatted with styler): braces
+  on all multi-line `if` statements, lines of at most 80 characters, and
+  consistent indentation and comment spacing. Mathematical variable names
+  (`J`, `I`, `H`, ...) keep the notation of the literature.
+* Removed an unused variable in `logl_etienne()` and `optim_etienne()`, and a
+  commented-out line of code. No change in results.
+
 # neutr 0.2.0
 
 ## Etienne sampling formula

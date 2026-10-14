@@ -1,6 +1,6 @@
 Package: neutr
 Title: Inference and Fast Generation of Neutral Species Assemblages
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     person("Jerome", "Chave", , "jerome.chave@cnrs.fr", role = c("aut", "cre"))
 Description: Maximum likelihood estimation of the parameters of four neutral
@@ -17,6 +17,7 @@ BugReports: https://github.com/jeromechave/neutr/issues
 Depends: R (>= 3.5.0)
 Imports: 
     dqrng,
+    lifecycle,
     stats
 Suggests: 
     knitr,

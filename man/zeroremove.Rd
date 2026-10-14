@@ -13,8 +13,8 @@ zeroremove(x)
 the vector \code{x} without its zero and missing (\code{NA}/\code{NaN}) elements
 }
 \description{
-\code{zeroremove()} is used to remove zeros and NAs in a vector of reals
-or of integers. This is a simple utility function.
+\code{zeroremove()} is used to remove zeros and NAs in a vector of
+reals or of integers. This is a simple utility function.
 }
 \examples{
 zeroremove(c(2.1, 0.0, 3.0, NA))
